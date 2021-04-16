@@ -1,8 +1,9 @@
 # Joking Hazard - das verrückte Partyspiel 
 
-#Kurzfassung
+## Kurzfassung
 Entwicklen des Joking Hazard Spiels für Mobilgeräte im Rahmen des Gruppenprojekts für SE 2
-#Das Spiel 
+
+## Das Spiel 
 Joking Hazard ist ein kreatives Partyspiel für drei oder mehrere Spieler.
 360 verschiedene Karten bilden zusammen schöne, witzige aber auch grausame Situationen.
 Das heißt es entsteht in jeder Runde von Grund auf eine neue Geschichte.
@@ -17,12 +18,12 @@ Nach dieser Runde ist der zweite Spieler der Richter usw. .
 Am Anfang jeder Runde nimmt jeder Spieler eine neue Karte. 
 Wer zuerst 3 Punkte hat gewinnt. 
 
-#Unsere zusätzlichen Funktionen
-#Schummelfunktion 
+## Unsere zusätzlichen Funktionen
+### Schummelfunktion 
 
 
 
-#Teilnehmer und Aufgabenbereiche
+## Teilnehmer und Aufgabenbereiche
 Felix Gebhart:
 Florian Dueller:
 Florian Ratschnig:
