@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'jacoco'
+    id "org.sonarqube" version "3.1.1"
 }
 
 android {
@@ -26,6 +27,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "SE2-Gruppe5_joking-hazard"
     }
 }
 
