@@ -24,8 +24,18 @@ Wer zuerst 3 Punkte hat gewinnt.
 
 
 ## Teilnehmer und Aufgabenbereiche
-Felix Gebhart:
-Florian Dueller:
-Florian Ratschnig:
-Nicolas Unterberger:
-Anna Lena Röttl:
+### Felix Gebhart
+Hauptaufgabe: Architektur
+Nebenaufgabe: Developer
+### Florian Dueller
+Hauptaufgabe: Developer
+Nebenaufgabe: Dokumentation
+### Florian Ratschnig
+Hauptaufgabe: Testen
+Nebenaufgabe: UI
+### Nicolas Unterberger
+Hauptaufgabe: Dokumentation
+Nebenaufgabe: Tests
+### Anna Lena Röttl
+Hauptaufgabe: UI
+Nebenaufgabe: Architektur
