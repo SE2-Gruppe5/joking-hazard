@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/EnteryournametextView2"
+            android:id="@+id/thisisyourroomtextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter Room Code"
@@ -42,7 +42,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/joingamebutton3"
+            android:id="@+id/creategamebutton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#DDD2D2"

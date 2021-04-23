@@ -30,7 +30,7 @@
         app:srcCompat="@drawable/logo" />
 
     <Button
-        android:id="@+id/joingamebutton"
+        android:id="@+id/joingamestartmenubutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#96DEFF"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/logoimageView" />
 
     <Button
-        android:id="@+id/creategamebutton"
+        android:id="@+id/creategamestartmenubutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#1DA73D"

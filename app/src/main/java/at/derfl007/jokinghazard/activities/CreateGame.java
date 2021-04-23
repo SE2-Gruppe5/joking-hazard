@@ -16,7 +16,7 @@ public class CreateGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
-        final Button creategame = findViewById(R.id.joingamebutton3);
+        final Button creategame = findViewById(R.id.creategamebutton);
         creategame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

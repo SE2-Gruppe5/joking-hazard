@@ -16,8 +16,8 @@ public class JoinGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
 
-        final Button startgame = findViewById(R.id.joingamebutton3);
-        startgame.setOnClickListener(new View.OnClickListener() {
+        final Button continuegame = findViewById(R.id.creategamebutton);
+        continuegame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(JoinGame.this, JoinGameEnterName.class));

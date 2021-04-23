@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.WaitingRoom">
+
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -19,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/EnteryournametextView2"
+            android:id="@+id/thisisyourroomtextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="This is your Room Code!  Go tell your friends about it"
@@ -42,7 +43,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/joingamebutton3"
+            android:id="@+id/creategamebutton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#DDD2D2"
