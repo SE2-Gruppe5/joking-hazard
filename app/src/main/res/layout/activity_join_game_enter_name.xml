@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.JoinGameEnterName">
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:dividerPadding="30dp"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:showDividers="middle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/EnteryournametextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter your Name"
+            android:textAlignment="center"
+            android:textColor="#090909"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Mein Name"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/joingamebutton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#DDD2D2"
+            android:text="Join Game"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#F8F0F0"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
