@@ -16,15 +16,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button joinGame = findViewById(R.id.joingamestartmenubutton);
+        final Button joinGame = findViewById(R.id.joinGameStartMenuButton);
         joinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, JoinGame.class));
             }
         });
-        final Button creategame = findViewById(R.id.creategamestartmenubutton);
-        creategame.setOnClickListener(new View.OnClickListener() {
+        final Button createGame = findViewById(R.id.createGameStartMenuButton);
+        createGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, CreateGame.class));

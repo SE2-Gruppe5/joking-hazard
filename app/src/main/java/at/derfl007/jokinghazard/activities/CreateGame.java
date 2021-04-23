@@ -16,8 +16,8 @@ public class CreateGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
-        final Button creategame = findViewById(R.id.creategamebutton);
-        creategame.setOnClickListener(new View.OnClickListener() {
+        final Button createGame = findViewById(R.id.createGameButton);
+        createGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(CreateGame.this, WaitingRoom.class));

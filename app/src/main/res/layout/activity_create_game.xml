@@ -19,10 +19,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/thisisyourroomtextView"
+            android:id="@+id/thisIsYourRoomTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter your Name"
+            android:text="@string/name_prompt"
             android:textAlignment="center"
             android:textColor="#090909"
             android:textSize="30sp"
@@ -36,17 +36,17 @@
             android:layout_marginBottom="50dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Mein Name"
+            android:text="@string/name_placeholder"
             android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/creategamebutton"
+            android:id="@+id/createGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#DDD2D2"
-            android:text="Create Game"
+            android:text="@string/create_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"
             app:backgroundTint="@null" />

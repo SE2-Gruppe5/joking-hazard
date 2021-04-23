@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Joking Hazard</string>
+    <string name="name_prompt">Enter your Name</string>
+    <string name="name_placeholder">Mein Name</string>
+    <string name="create_game_button">Create Game</string>
+    <string name="enter_room_code">Enter Room Code</string>
+    <string name="continue_button">Continue</string>
+    <string name="join_game_button">Join Game</string>
+    <string name="room_code_message">This is your Room Code! Go tell your friends about it</string>
+    <string name="start_game_button">Start Game</string>
+    <string name="room_code_placeholder">1234</string>
 </resources>
