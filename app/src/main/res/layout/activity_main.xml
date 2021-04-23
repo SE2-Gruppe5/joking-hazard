@@ -4,15 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@drawable/background"
+    tools:context=".activities.MainActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/backgroundImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/background" />
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="447dp"
+        android:layout_height="218dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <Button
+        android:id="@+id/joinGameStartMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:text="@string/join_game_button"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/logoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+
+    <Button
+        android:id="@+id/createGameStartMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:text="@string/create_game_button"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/logoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+
+    <ImageView
+        android:id="@+id/cardsImageView"
+        android:layout_width="114dp"
+        android:layout_height="125dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/logoImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/linksneu" />
+
+    <ImageView
+        android:id="@+id/cardsRedImageView"
+        android:layout_width="114dp"
+        android:layout_height="125dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="52dp"
+        app:layout_constraintStart_toEndOf="@+id/logoImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/red" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
