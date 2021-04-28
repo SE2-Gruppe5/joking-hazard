@@ -9,11 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JokingHazard">
-        <activity android:name=".activities.JoinGameEnterName" android:screenOrientation="landscape" />
-        <activity android:name=".activities.WaitingRoom" android:screenOrientation="landscape" />
-        <activity android:name=".activities.CreateGame" android:screenOrientation="landscape" />
-        <activity android:name=".activities.JoinGame" android:screenOrientation="landscape" />
-        <activity android:name=".activities.MainActivity" android:screenOrientation="landscape">
+        <activity android:name=".activities.SpielmodiAuswahl"></activity>
+        <activity
+            android:name=".activities.JoinGameEnterName"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activities.WaitingRoom"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activities.CreateGame"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activities.JoinGame"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

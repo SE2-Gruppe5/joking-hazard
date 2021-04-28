@@ -7,6 +7,7 @@
     tools:context=".activities.WaitingRoom">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:dividerPadding="30dp"
@@ -45,11 +46,109 @@
             android:id="@+id/createGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#DDD2D2"
+            android:background="#CAE1AF"
             android:text="@string/start_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"
             app:backgroundTint="@null" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageViewAdminPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/avatar_1" />
+
+    <ImageView
+        android:id="@+id/imageViewPlayer2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/avatar_2" />
+
+    <ImageView
+        android:id="@+id/imageViewPlayer3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/avatar_3" />
+
+    <ImageView
+        android:id="@+id/imageViewPlayer4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:srcCompat="@drawable/avatar_4" />
+
+    <TextView
+        android:id="@+id/textViewPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Alena"
+        android:textColor="#2196F3"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewAdminPlayer1"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/imageViewAdminPlayer1"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewAdminPlayer1" />
+
+    <TextView
+        android:id="@+id/textViewPlayer2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Florian"
+        android:textColor="#4CAF50"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewPlayer2"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/imageViewPlayer2"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPlayer2" />
+
+    <TextView
+        android:id="@+id/textViewPlayer3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Nico"
+        android:textColor="#FF9800"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewPlayer3"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/imageViewPlayer3"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPlayer3" />
+
+    <TextView
+        android:id="@+id/textViewPlayer4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Felix"
+        android:textColor="#DAC08F"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewPlayer4"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/imageViewPlayer4"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPlayer4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
