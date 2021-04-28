@@ -45,7 +45,7 @@
             android:id="@+id/createGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#DDD2D2"
+            android:background="#CAE1AF"
             android:text="@string/create_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"

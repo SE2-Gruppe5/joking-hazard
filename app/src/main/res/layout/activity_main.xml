@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     tools:context=".activities.MainActivity">
-
     <ImageView
         android:id="@+id/backgroundImageView"
         android:layout_width="wrap_content"
@@ -40,7 +39,8 @@
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/logoImageView"
-        app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView"
+        app:layout_constraintVertical_bias="0.503" />
 
     <Button
         android:id="@+id/createGameStartMenuButton"

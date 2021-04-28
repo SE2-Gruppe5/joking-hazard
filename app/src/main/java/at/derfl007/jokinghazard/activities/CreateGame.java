@@ -20,9 +20,10 @@ public class CreateGame extends AppCompatActivity {
         createGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateGame.this, WaitingRoom.class));
+                startActivity(new Intent(CreateGame.this, SpielmodiAuswahl.class));
             }
         });
+
     }
 
 }
