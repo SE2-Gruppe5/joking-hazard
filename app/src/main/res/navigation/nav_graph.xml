@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startmenuFragment">
+    <fragment
+        android:id="@+id/createGameFragment"
+        android:name="at.derfl007.jokinghazard.fragments.CreateGameFragment"
+        android:label="fragment_create_game"
+        tools:layout="@layout/fragment_create_game">
+        <action
+            android:id="@+id/action_createGameFragment_to_gameModeSelectionFragment"
+            app:destination="@id/gameModeSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinGameFragment"
+        android:name="at.derfl007.jokinghazard.fragments.JoinGameFragment"
+        android:label="fragment_join_game"
+        tools:layout="@layout/fragment_join_game">
+        <action
+            android:id="@+id/action_joinGameFragment_to_joinGameEnterNameFragment"
+            app:destination="@id/joinGameEnterNameFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinGameEnterNameFragment"
+        android:name="at.derfl007.jokinghazard.fragments.JoinGameEnterNameFragment"
+        android:label="fragment_join_game_enter_name"
+        tools:layout="@layout/fragment_join_game_enter_name">
+        <action
+            android:id="@+id/action_joinGameEnterNameFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/startmenuFragment"
+        android:name="at.derfl007.jokinghazard.fragments.StartmenuFragment"
+        android:label="fragment_startmenu"
+        tools:layout="@layout/fragment_startmenu">
+        <action
+            android:id="@+id/action_startmenuFragment_to_createGameFragment"
+            app:destination="@id/createGameFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
+        <action
+            android:id="@+id/action_startmenuFragment_to_joinGameFragment"
+            app:destination="@id/joinGameFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/waitingRoomFragment"
+        android:name="at.derfl007.jokinghazard.fragments.WaitingRoomFragment"
+        android:label="fragment_waiting_room"
+        tools:layout="@layout/fragment_waiting_room" >
+    </fragment>
+    <fragment
+        android:id="@+id/gameModeSelectionFragment"
+        android:name="at.derfl007.jokinghazard.fragments.GameModeSelectionFragment"
+        android:label="fragment_game_mode_selection"
+        tools:layout="@layout/fragment_game_mode_selection">
+        <action
+            android:id="@+id/action_gameModeSelectionFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment">
+        </action>
+    </fragment>
+</navigation>

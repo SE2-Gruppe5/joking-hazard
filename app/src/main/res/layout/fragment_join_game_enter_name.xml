@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textAlignment="center"
-    tools:context=".activities.JoinGame">
-
+    tools:context=".fragments.JoinGameEnterNameFragment">
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -24,20 +22,22 @@
             android:id="@+id/thisIsYourRoomTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/enter_room_code"
+            android:text="@string/name_prompt"
             android:textAlignment="center"
             android:textColor="#090909"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/gameTextNumber"
+            android:id="@+id/editTextPersonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
             android:ems="10"
-            android:inputType="number"
+            android:inputType="textPersonName"
+            android:text="@string/name_placeholder"
+            android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -46,9 +46,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#CAE1AF"
-            android:text="@string/continue_button"
+            android:text="@string/join_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"
             app:backgroundTint="@null" />
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

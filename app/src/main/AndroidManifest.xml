@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="at.derfl007.jokinghazard">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,22 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JokingHazard">
-        <activity android:name=".activities.SpielmodiAuswahl"></activity>
-        <activity
-            android:name=".activities.JoinGameEnterName"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".activities.WaitingRoom"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".activities.CreateGame"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".activities.JoinGame"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".activities.MainActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".activities.MainActivity" android:screenOrientation="landscape" android:immersive="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
