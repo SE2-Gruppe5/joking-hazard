@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JokingHazard">
-        <activity android:name=".activities.Spielbrett"></activity>
-        <activity android:name=".activities.SpielmodiAuswahl" />
+        <activity android:name=".activities.Spielbrett"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".activities.SpielmodiAuswahl"
+            android:screenOrientation="landscape"/>
         <activity
             android:name=".activities.JoinGameEnterName"
             android:screenOrientation="landscape" />
