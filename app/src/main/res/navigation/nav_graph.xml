@@ -10,10 +10,8 @@
         android:label="fragment_create_game"
         tools:layout="@layout/fragment_create_game">
         <action
-            android:id="@+id/action_createGameFragment_to_waitingRoomFragment"
-            app:destination="@id/waitingRoomFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_createGameFragment_to_gameModeSelectionFragment"
+            app:destination="@id/gameModeSelectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGameFragment"
@@ -57,5 +55,16 @@
         android:id="@+id/waitingRoomFragment"
         android:name="at.derfl007.jokinghazard.fragments.WaitingRoomFragment"
         android:label="fragment_waiting_room"
-        tools:layout="@layout/fragment_waiting_room" />
+        tools:layout="@layout/fragment_waiting_room" >
+    </fragment>
+    <fragment
+        android:id="@+id/gameModeSelectionFragment"
+        android:name="at.derfl007.jokinghazard.fragments.GameModeSelectionFragment"
+        android:label="fragment_game_mode_selection"
+        tools:layout="@layout/fragment_game_mode_selection">
+        <action
+            android:id="@+id/action_gameModeSelectionFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment">
+        </action>
+    </fragment>
 </navigation>

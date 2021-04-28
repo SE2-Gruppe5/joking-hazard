@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="center"
-    tools:context=".activities.SpielmodiAuswahl">
-
+    tools:context=".fragments.GameModeSelectionFragment">
 
     <TextView
         android:id="@+id/spielModiAuswahl"
         android:layout_width="301dp"
         android:layout_height="86dp"
         android:layout_marginTop="32dp"
-        android:text="Wähle deinen Spielmodus aus"
+        android:text="@string/choose_gamemode"
         android:textAlignment="center"
         android:textColor="#020202"
         android:textSize="30sp"
@@ -23,47 +22,58 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonGamemodeJerkMode"
+        android:id="@+id/buttonGamemodeDefault"
         android:layout_width="192dp"
         android:layout_height="58dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="80dp"
         android:background="@color/green"
-        android:text="JerkMode"
+        android:text="@string/normal"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="@+id/spielModiAuswahl"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="@+id/spielModiAuswahl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spielModiAuswahl" />
+
+    <Button
+        android:id="@+id/buttonGamemodeJerkMode"
+        android:layout_width="192dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="140dp"
+        android:background="@color/teal_700"
+        android:text="@string/jerkmode"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spielModiAuswahl" />
 
     <Button
         android:id="@+id/buttonGamemodeMarathon"
         android:layout_width="192dp"
         android:layout_height="58dp"
-        android:layout_marginTop="25dp"
-        android:background="@color/blue"
-        android:text="Marathon"
+        android:layout_marginTop="24dp"
+        android:background="@color/teal_200"
+        android:text="@string/marathon"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeJerkMode"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeJerkMode"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeJerkMode" />
+        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeDefault"
+        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeDefault"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeDefault" />
 
     <Button
         android:id="@+id/buttonGamemodeNeverendingStory"
         android:layout_width="192dp"
         android:layout_height="58dp"
-        android:layout_marginTop="25dp"
-        android:background="#9E9C9C"
-        android:text=" Neverending Story"
+        android:layout_marginTop="24dp"
+        android:background="@color/blue"
+        android:text="@string/neverending_story"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeMarathon"
-        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeMarathon"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeMarathon" />
-
+        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeJerkMode"
+        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeJerkMode"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeJerkMode" />
 </androidx.constraintlayout.widget.ConstraintLayout>

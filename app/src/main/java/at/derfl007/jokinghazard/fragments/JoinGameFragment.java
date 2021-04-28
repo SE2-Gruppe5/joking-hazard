@@ -15,53 +15,21 @@ import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Socket;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link JoinGameFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class JoinGameFragment extends Fragment {
 
     private Socket socket;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public JoinGameFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JoinGameFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static JoinGameFragment newInstance(String param1, String param2) {
-        JoinGameFragment fragment = new JoinGameFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static JoinGameFragment newInstance() {
+        return new JoinGameFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -69,7 +37,7 @@ public class JoinGameFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        socket = ((MainActivity) getActivity()).mSocket;
+        socket = ((MainActivity) requireActivity()).mSocket;
 
         return inflater.inflate(R.layout.fragment_join_game, container, false);
     }
