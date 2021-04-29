@@ -56,6 +56,9 @@
         android:name="at.derfl007.jokinghazard.fragments.WaitingRoomFragment"
         android:label="fragment_waiting_room"
         tools:layout="@layout/fragment_waiting_room" >
+        <action
+            android:id="@+id/action_waitingRoomFragment_to_gameBoardFragment"
+            app:destination="@id/gameBoardFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameModeSelectionFragment"
@@ -67,4 +70,9 @@
             app:destination="@id/waitingRoomFragment">
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/gameBoardFragment"
+        android:name="at.derfl007.jokinghazard.fragments.GameBoardFragment"
+        android:label="fragment_game_board"
+        tools:layout="@layout/fragment_game_board" />
 </navigation>
