@@ -1,21 +1,20 @@
 package at.derfl007.jokinghazard.fragments;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Socket;
 
-public class WaitingRoomFragment extends Fragment {
+public class GameBoardFragment extends Fragment {
 
     private Socket socket;
 
@@ -23,12 +22,12 @@ public class WaitingRoomFragment extends Fragment {
 
     private int gameMode;
 
-    public WaitingRoomFragment() {
+    public GameBoardFragment() {
         // Required empty public constructor
     }
 
-    public static WaitingRoomFragment newInstance(int gameMode) {
-        WaitingRoomFragment fragment = new WaitingRoomFragment();
+    public static GameBoardFragment newInstance(int gameMode) {
+        GameBoardFragment fragment = new GameBoardFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_GAME_MODE, gameMode);
         fragment.setArguments(args);
@@ -50,13 +49,11 @@ public class WaitingRoomFragment extends Fragment {
 
         socket = ((MainActivity) requireActivity()).mSocket;
 
-        return inflater.inflate(R.layout.fragment_waiting_room, container, false);
+        return inflater.inflate(R.layout.fragment_game_board, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Button startGame = view.findViewById(R.id.startGameInWaitingRoomButton);
-        startGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_waitingRoomFragment_to_gameBoardFragment));
     }
 }
