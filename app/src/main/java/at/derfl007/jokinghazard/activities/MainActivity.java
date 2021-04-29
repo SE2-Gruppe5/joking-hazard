@@ -1,34 +1,37 @@
 package at.derfl007.jokinghazard.activities;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import java.net.URISyntaxException;
+import java.util.Objects;
 
 import at.derfl007.jokinghazard.R;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
+    public Socket mSocket;{
+        try {
+            mSocket = IO.socket("https://joking-hazard-server.herokuapp.com/");
+        } catch (URISyntaxException e) {
+            Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
+        }
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSocket.connect();
+    }
 
-        final Button joinGame = findViewById(R.id.joinGameStartMenuButton);
-        joinGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, JoinGame.class));
-            }
-        });
-        final Button createGame = findViewById(R.id.createGameStartMenuButton);
-        createGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, CreateGame.class));
-            }
-        });
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
     }
 }
