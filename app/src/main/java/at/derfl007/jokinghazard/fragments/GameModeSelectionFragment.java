@@ -54,24 +54,11 @@ public class GameModeSelectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Button defaultMode = view.findViewById(R.id.buttonGamemodeDefault);
-        defaultMode.setOnClickListener(v -> {
+        final Button createGame = view.findViewById(R.id.saveOptionButton);
+        createGame.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_gameModeSelectionFragment_to_waitingRoomFragment);
         });
 
-        final Button jerkMode = view.findViewById(R.id.buttonGamemodeJerkMode);
-        jerkMode.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_gameModeSelectionFragment_to_waitingRoomFragment);
-        });
 
-        final Button neverendingStory = view.findViewById(R.id.buttonGamemodeNeverendingStory);
-        neverendingStory.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_gameModeSelectionFragment_to_waitingRoomFragment);
-        });
-
-        final Button marathon = view.findViewById(R.id.buttonGamemodeMarathon);
-        marathon.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_gameModeSelectionFragment_to_waitingRoomFragment);
-        });
     }
 }

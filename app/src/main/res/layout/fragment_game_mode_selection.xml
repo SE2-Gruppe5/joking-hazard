@@ -22,58 +22,46 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonGamemodeDefault"
+        android:id="@+id/saveOptionButton"
         android:layout_width="192dp"
         android:layout_height="58dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="80dp"
-        android:background="@color/green"
-        android:text="@string/normal"
+        android:layout_marginTop="64dp"
+        android:background="@color/blue"
+        android:text="@string/save_option_button"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="@+id/editTextNumber3"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/editTextNumber2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumber3" />
+
+    <EditText
+        android:id="@+id/editTextNumber2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="64dp"
+        android:ems="10"
+        android:hint="Point Limit"
+        android:inputType="number"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber3"
+        app:layout_constraintHorizontal_bias="0.032"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spielModiAuswahl" />
 
-    <Button
-        android:id="@+id/buttonGamemodeJerkMode"
-        android:layout_width="192dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="140dp"
-        android:background="@color/teal_700"
-        android:text="@string/jerkmode"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:backgroundTint="@null"
+    <EditText
+        android:id="@+id/editTextNumber3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="88dp"
+        android:ems="10"
+        android:hint="Time Limit Seconds"
+        android:inputType="number"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spielModiAuswahl" />
 
-    <Button
-        android:id="@+id/buttonGamemodeMarathon"
-        android:layout_width="192dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/teal_200"
-        android:text="@string/marathon"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeDefault"
-        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeDefault"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeDefault" />
-
-    <Button
-        android:id="@+id/buttonGamemodeNeverendingStory"
-        android:layout_width="192dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/blue"
-        android:text="@string/neverending_story"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="@+id/buttonGamemodeJerkMode"
-        app:layout_constraintStart_toStartOf="@+id/buttonGamemodeJerkMode"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGamemodeJerkMode" />
 </androidx.constraintlayout.widget.ConstraintLayout>
