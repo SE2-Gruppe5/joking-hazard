@@ -19,10 +19,8 @@
         android:label="fragment_join_game"
         tools:layout="@layout/fragment_join_game">
         <action
-            android:id="@+id/action_joinGameFragment_to_joinGameEnterNameFragment"
-            app:destination="@id/joinGameEnterNameFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_joinGameFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGameEnterNameFragment"
@@ -30,10 +28,8 @@
         android:label="fragment_join_game_enter_name"
         tools:layout="@layout/fragment_join_game_enter_name">
         <action
-            android:id="@+id/action_joinGameEnterNameFragment_to_waitingRoomFragment"
-            app:destination="@id/waitingRoomFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_joinGameEnterNameFragment_to_joinGameFragment"
+            app:destination="@id/joinGameFragment" />
     </fragment>
     <fragment
         android:id="@+id/startmenuFragment"
@@ -46,10 +42,8 @@
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit" />
         <action
-            android:id="@+id/action_startmenuFragment_to_joinGameFragment"
-            app:destination="@id/joinGameFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_startmenuFragment_to_joinGameEnterNameFragment"
+            app:destination="@id/joinGameEnterNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/waitingRoomFragment"
@@ -59,6 +53,10 @@
         <action
             android:id="@+id/action_waitingRoomFragment_to_gameBoardFragment"
             app:destination="@id/gameBoardFragment" />
+        <argument
+            android:name="roomCode"
+            app:argType="string"
+            android:defaultValue="1234" />
     </fragment>
     <fragment
         android:id="@+id/gameModeSelectionFragment"

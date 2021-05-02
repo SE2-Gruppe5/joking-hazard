@@ -42,7 +42,7 @@ public class StartmenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         final Button joinGame = view.findViewById(R.id.joinGameStartMenuButton);
-        joinGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_joinGameFragment));
+        joinGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_joinGameEnterNameFragment));
         final Button createGame = view.findViewById(R.id.createGameStartMenuButton);
         createGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_createGameFragment));
     }
