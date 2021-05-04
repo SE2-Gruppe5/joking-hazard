@@ -70,41 +70,47 @@
             android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/layoutImgButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/ComicStoryImg_Player1"
+            <ImageButton
+                android:id="@+id/cardOfPlayer1"
                 android:layout_width="wrap_content"
                 android:layout_height="140dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Player1"
-                app:srcCompat="@drawable/transparent" />
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/transparent" />
 
-            <ImageView
-                android:id="@+id/ComicStoryImg_Player2"
+            <ImageButton
+                android:id="@+id/cardOfPlayer2"
                 android:layout_width="wrap_content"
                 android:layout_height="140dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Player2"
-                app:srcCompat="@drawable/transparent" />
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/transparent" />
 
-            <ImageView
-                android:id="@+id/ComicStoryImg_Player3"
+            <ImageButton
+                android:id="@+id/cardOfPlayer3"
                 android:layout_width="wrap_content"
                 android:layout_height="140dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Player3"
-                app:srcCompat="@drawable/transparent" />
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/transparent" />
 
-            <ImageView
-                android:id="@+id/ComicStoryImg_Player4"
+            <ImageButton
+                android:id="@+id/cardOfPlayer4"
                 android:layout_width="wrap_content"
                 android:layout_height="140dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Player4"
-                app:srcCompat="@drawable/transparent" />
+                android:padding="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/transparent" />
+
         </LinearLayout>
 
         <Button
