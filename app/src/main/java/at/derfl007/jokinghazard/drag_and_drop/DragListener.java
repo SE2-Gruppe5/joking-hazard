@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.DragAndDrop;
+package at.derfl007.jokinghazard.drag_and_drop;
 
 import android.content.ClipData;
 import android.content.ClipDescription;

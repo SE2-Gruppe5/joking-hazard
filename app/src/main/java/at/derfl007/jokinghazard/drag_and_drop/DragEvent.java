@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.DragAndDrop;
+package at.derfl007.jokinghazard.drag_and_drop;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -9,9 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 
-
 public class DragEvent extends Activity {
-
 
 
     private static final String IMAGEVIEW = "bitmap";
