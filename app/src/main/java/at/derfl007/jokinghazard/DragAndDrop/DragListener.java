@@ -10,7 +10,7 @@ import android.view.View;
 
 public class DragListener implements View.OnDragListener {
     String msg;
-    
+
     public boolean onDrag(View v, DragEvent event) {
         final int action = event.getAction();
 
