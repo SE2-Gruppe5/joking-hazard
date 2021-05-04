@@ -8,6 +8,9 @@
     <string name="join_game_button">Join Game</string>
     <string name="room_code_message">This is your Room Code! Go tell your friends about it</string>
     <string name="start_game_button">Start Game</string>
+    <string name="yourStory">Your Story:</string>
+    <string name="chooseStory">Choose your favorite Story:</string>
+    <!-- TODO: this one also? -->
     <string name="room_code_placeholder">1234</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -16,4 +19,5 @@
     <string name="marathon">Marathon</string>
     <string name="save_option_button">Create Game</string>
     <string name="normal">Normal</string>
+
 </resources>
