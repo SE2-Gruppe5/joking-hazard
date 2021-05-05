@@ -2,7 +2,6 @@ package at.derfl007.jokinghazard.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -75,5 +74,4 @@ public class GameBoardFragment extends Fragment {
             //ToDo adding points to a player
         }
     };
-
 }

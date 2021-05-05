@@ -10,8 +10,8 @@
         android:label="fragment_create_game"
         tools:layout="@layout/fragment_create_game">
         <action
-            android:id="@+id/action_createGameFragment_to_gameModeSelectionFragment"
-            app:destination="@id/gameModeSelectionFragment" />
+            android:id="@+id/action_createGameFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGameFragment"
@@ -19,21 +19,23 @@
         android:label="fragment_join_game"
         tools:layout="@layout/fragment_join_game">
         <action
-            android:id="@+id/action_joinGameFragment_to_joinGameEnterNameFragment"
-            app:destination="@id/joinGameEnterNameFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_joinGameFragment_to_waitingRoomFragment"
+            app:destination="@id/waitingRoomFragment" />
     </fragment>
     <fragment
-        android:id="@+id/joinGameEnterNameFragment"
-        android:name="at.derfl007.jokinghazard.fragments.JoinGameEnterNameFragment"
+        android:id="@+id/enterNameFragment"
+        android:name="at.derfl007.jokinghazard.fragments.EnterNameFragment"
         android:label="fragment_join_game_enter_name"
-        tools:layout="@layout/fragment_join_game_enter_name">
+        tools:layout="@layout/fragment_enter_name">
         <action
-            android:id="@+id/action_joinGameEnterNameFragment_to_waitingRoomFragment"
-            app:destination="@id/waitingRoomFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
+            android:id="@+id/action_enterNameFragment_to_joinGameFragment"
+            app:destination="@id/joinGameFragment" />
+        <action
+            android:id="@+id/action_enterNameFragment_to_createGameFragment"
+            app:destination="@id/createGameFragment" />
+        <argument
+            android:name="action"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/startmenuFragment"
@@ -41,13 +43,8 @@
         android:label="fragment_startmenu"
         tools:layout="@layout/fragment_startmenu">
         <action
-            android:id="@+id/action_startmenuFragment_to_createGameFragment"
-            app:destination="@id/createGameFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit" />
-        <action
-            android:id="@+id/action_startmenuFragment_to_joinGameFragment"
-            app:destination="@id/joinGameFragment"
+            android:id="@+id/action_startmenuFragment_to_enterNameFragment"
+            app:destination="@id/enterNameFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit" />
     </fragment>
@@ -59,16 +56,10 @@
         <action
             android:id="@+id/action_waitingRoomFragment_to_gameBoardFragment"
             app:destination="@id/gameBoardFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/gameModeSelectionFragment"
-        android:name="at.derfl007.jokinghazard.fragments.GameModeSelectionFragment"
-        android:label="fragment_game_mode_selection"
-        tools:layout="@layout/fragment_game_mode_selection">
-        <action
-            android:id="@+id/action_gameModeSelectionFragment_to_waitingRoomFragment"
-            app:destination="@id/waitingRoomFragment">
-        </action>
+        <argument
+            android:name="roomCode"
+            app:argType="string"
+            android:defaultValue="1234" />
     </fragment>
     <fragment
         android:id="@+id/gameBoardFragment"
