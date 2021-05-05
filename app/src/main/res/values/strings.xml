@@ -8,7 +8,17 @@
     <string name="join_game_button">Join Game</string>
     <string name="room_code_message">This is your Room Code! Go tell your friends about it</string>
     <string name="start_game_button">Start Game</string>
+    <string name="yourStory">Your Story:</string>
+    <string name="chooseStory">Choose your favorite Story:</string>
     <string name="room_code_placeholder">1234</string>
+    <string name="confirm_button">Confirm</string>
+
+    <!--    ContentDescriptions
+    -->
+    <string name="playedCardFromDeck">This is the story card from the deck</string>
+    <string name="playedCardFromJudge">This is the story card from the Judge</string>
+    <string name="playedCardFromWinner">This is the story card from the Winner</string>
+  
     <string name="choose_gamemode">Game options</string>
     <string name="save_option_button">Create Game</string>
     <string name="normal">Normal</string>

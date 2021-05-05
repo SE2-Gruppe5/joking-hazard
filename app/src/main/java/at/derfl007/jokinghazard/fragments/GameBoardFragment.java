@@ -3,6 +3,7 @@ package at.derfl007.jokinghazard.fragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class GameBoardFragment extends Fragment {
 
@@ -54,6 +56,22 @@ public class GameBoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        socket.on("all_cards_played", onAllCardsPlayed);
+        socket.on("user_set_points", onUserSetPoints);
     }
 
+    private Emitter.Listener onAllCardsPlayed = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //ToDo Load an Fragement over the Gameboardfragment not just replace the GameBoard-Fragment
+            Navigation.findNavController(getView()).navigate(R.id.action_gameBoardFragment_to_votingUIFragment);
+        }
+    };
+
+    private Emitter.Listener onUserSetPoints = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //ToDo adding points to a player
+        }
+    };
 }
