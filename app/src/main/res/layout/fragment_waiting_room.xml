@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/thisIsYourRoomTextView"
+            android:id="@+id/thisIsYourRoomCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/room_code_message"
@@ -31,19 +31,18 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/gameTextNumber"
+            android:id="@+id/roomCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="50dp"
             android:ems="10"
-            android:text="@string/room_code_placeholder"
             android:textAlignment="center"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/startGameInWaitingRoomButton"
+            android:id="@+id/startGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#CAE1AF"

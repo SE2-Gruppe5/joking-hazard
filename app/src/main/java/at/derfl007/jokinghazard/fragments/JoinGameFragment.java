@@ -1,18 +1,24 @@
 package at.derfl007.jokinghazard.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
+import io.socket.client.Ack;
 import io.socket.client.Socket;
 
 public class JoinGameFragment extends Fragment {
@@ -46,10 +52,39 @@ public class JoinGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Button continueGame = view.findViewById(R.id.createGameButton);
+        final Button continueGame = view.findViewById(R.id.joinGameButton);
+        final EditText roomCodeTextView = view.findViewById(R.id.roomCodeTextView);
+
+
         continueGame.setOnClickListener(v -> {
             // TODO Network stuff
-            Navigation.findNavController(v).navigate(R.id.action_joinGameFragment_to_joinGameEnterNameFragment);
+
+            String roomCode = roomCodeTextView.getText().toString();
+            socket.emit("room:join", roomCode, (Ack) args1 -> {
+
+                // socket.emit() wird standardmäßig nicht auf dem UI Thread ausgeführt.
+                // navigate muss allerdings am UI Thread ausgeführt werden
+                getActivity().runOnUiThread(() -> {
+                    JSONObject response1 = (JSONObject) args1[0];
+
+                    try {
+                        // wenn server ok sendet --> Navigation
+                        if (response1.getString("status").equals("ok")) {
+
+                            // für roomCode übergabe an waiting room
+                            Bundle bundle = new Bundle();
+                            bundle.putString("roomCode", response1.getString("roomCode"));
+                            Navigation.findNavController(v).navigate(R.id.action_joinGameFragment_to_waitingRoomFragment, bundle);
+
+                        } else {
+                            Log.e("error", "error");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+            });
+
         });
     }
 }

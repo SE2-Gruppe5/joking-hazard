@@ -41,10 +41,19 @@ public class StartmenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         final Button joinGame = view.findViewById(R.id.joinGameStartMenuButton);
-        joinGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_joinGameFragment));
+        joinGame.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("action", R.id.action_enterNameFragment_to_joinGameFragment);
+            Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_enterNameFragment, bundle);
+        });
         final Button createGame = view.findViewById(R.id.createGameStartMenuButton);
-        createGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_createGameFragment));
+        createGame.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("action", R.id.action_enterNameFragment_to_createGameFragment);
+            Navigation.findNavController(v).navigate(R.id.action_startmenuFragment_to_enterNameFragment, bundle);
+        });
     }
 
     @Override

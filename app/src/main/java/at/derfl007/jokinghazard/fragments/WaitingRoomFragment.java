@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,18 +21,18 @@ public class WaitingRoomFragment extends Fragment {
 
     private Socket socket;
 
-    private static final String ARG_GAME_MODE = "gameMode";
+    private static final String ARG_ROOM_CODE = "roomCode";
 
-    private int gameMode;
+    private String roomCode;
 
     public WaitingRoomFragment() {
         // Required empty public constructor
     }
 
-    public static WaitingRoomFragment newInstance(int gameMode) {
+    public static WaitingRoomFragment newInstance(String roomCode) {
         WaitingRoomFragment fragment = new WaitingRoomFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_GAME_MODE, gameMode);
+        args.putString(ARG_ROOM_CODE, roomCode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +41,7 @@ public class WaitingRoomFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            gameMode = getArguments().getInt(ARG_GAME_MODE);
+            roomCode = getArguments().getString(ARG_ROOM_CODE);
         }
     }
 
@@ -56,7 +58,21 @@ public class WaitingRoomFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Button startGame = view.findViewById(R.id.startGameInWaitingRoomButton);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                socket.emit("room:leave");
+                Navigation.findNavController(view).navigateUp();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+        // set roomcode in textView
+        final TextView roomCodeTextView = view.findViewById(R.id.roomCodeTextView);
+        roomCodeTextView.setText(roomCode);
+        // TODO Only show button when at least 3 players are in the room
+        final Button startGame = view.findViewById(R.id.startGameButton);
         startGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_waitingRoomFragment_to_gameBoardFragment));
     }
 }
