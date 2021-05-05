@@ -101,7 +101,6 @@ public class VotingUIFragment extends Fragment {
         confirmBtn.setEnabled(true);
         confirmBtn.setOnClickListener(x -> {
                 // ToDo send an Event and get the User who ownes the Card
-                // ToDo nav to this Fragment in gameboard
         });
     }
 }

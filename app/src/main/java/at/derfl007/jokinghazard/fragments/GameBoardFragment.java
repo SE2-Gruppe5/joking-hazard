@@ -58,12 +58,21 @@ public class GameBoardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         socket.on("all_cards_played", onAllCardsPlayed);
+        socket.on("user_set_points", onUserSetPoints);
     }
 
     private Emitter.Listener onAllCardsPlayed = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            
+            //ToDo Load an Fragement over the Gameboardfragment not just replace the GameBoard-Fragment
+            Navigation.findNavController(getView()).navigate(R.id.action_gameBoardFragment_to_votingUIFragment);
+        }
+    };
+
+    private Emitter.Listener onUserSetPoints = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //ToDo adding points to a player
         }
     };
 

@@ -74,5 +74,14 @@
         android:id="@+id/gameBoardFragment"
         android:name="at.derfl007.jokinghazard.fragments.GameBoardFragment"
         android:label="fragment_game_board"
-        tools:layout="@layout/fragment_game_board" />
+        tools:layout="@layout/fragment_game_board" >
+        <action
+            android:id="@+id/action_gameBoardFragment_to_votingUIFragment"
+            app:destination="@id/votingUIFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/votingUIFragment"
+        android:name="at.derfl007.jokinghazard.fragments.VotingUIFragment"
+        android:label="fragment_voting_ui"
+        tools:layout="@layout/fragment_voting_ui" />
 </navigation>
