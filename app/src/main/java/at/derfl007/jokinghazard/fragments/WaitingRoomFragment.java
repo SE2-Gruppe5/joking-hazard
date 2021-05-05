@@ -11,7 +11,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import at.derfl007.jokinghazard.R;
@@ -30,10 +29,10 @@ public class WaitingRoomFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static WaitingRoomFragment newInstance(int gameMode) {
+    public static WaitingRoomFragment newInstance(String roomCode) {
         WaitingRoomFragment fragment = new WaitingRoomFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_ROOM_CODE, gameMode);
+        args.putString(ARG_ROOM_CODE, roomCode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,8 +43,6 @@ public class WaitingRoomFragment extends Fragment {
         if (getArguments() != null) {
             roomCode = getArguments().getString(ARG_ROOM_CODE);
         }
-
-
     }
 
     @Override
@@ -72,13 +69,10 @@ public class WaitingRoomFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
         // set roomcode in textView
-        final TextView roomCodeTextView = view.findViewById(R.id.gameTextNumber);
+        final TextView roomCodeTextView = view.findViewById(R.id.roomCodeTextView);
         roomCodeTextView.setText(roomCode);
-        final Button startGame = view.findViewById(R.id.startGameInWaitingRoomButton);
+        // TODO Only show button when at least 3 players are in the room
+        final Button startGame = view.findViewById(R.id.startGameButton);
         startGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_waitingRoomFragment_to_gameBoardFragment));
-
     }
-
-
-
 }

@@ -14,7 +14,9 @@ import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
-    public Socket mSocket;{
+    public Socket mSocket;
+
+    {
         try {
             mSocket = IO.socket("https://joking-hazard-server.herokuapp.com/");
         } catch (URISyntaxException e) {

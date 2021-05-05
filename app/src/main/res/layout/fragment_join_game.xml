@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/thisIsYourRoomTextView"
+            android:id="@+id/thisIsYourRoomCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/enter_room_code"
@@ -31,7 +31,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/gameTextNumber"
+            android:id="@+id/roomCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
@@ -42,11 +42,11 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/createGameButton"
+            android:id="@+id/joinGameButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#CAE1AF"
-            android:text="@string/continue_button"
+            android:text="@string/join_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"
             app:backgroundTint="@null" />

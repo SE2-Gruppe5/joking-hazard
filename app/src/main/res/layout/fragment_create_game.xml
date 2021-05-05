@@ -1,55 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".fragments.CreateGameFragment">
-<LinearLayout
-    android:layout_width="300dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:dividerPadding="30dp"
-    android:orientation="vertical"
-    android:paddingTop="50dp"
-    android:paddingBottom="50dp"
-    android:showDividers="middle"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:textAlignment="center"
+    tools:context=".fragments.CreateGameFragment">
 
     <TextView
-        android:id="@+id/thisIsYourRoomTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/name_prompt"
+        android:id="@+id/gameOptionsTextView"
+        android:layout_width="301dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/choose_gamemode"
         android:textAlignment="center"
-        android:textColor="#090909"
+        android:textColor="#020202"
         android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/editTextPersonName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/name_placeholder"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/createGameButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#DDD2D2"
-        android:text="@string/create_game_button"
+        android:id="@+id/saveOptionsButton"
+        android:layout_width="192dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="64dp"
+        android:background="@color/blue"
+        android:text="@string/save_option_button"
         android:textColor="#FFFFFF"
-        android:textColorHint="#F8F0F0"
-        app:backgroundTint="@null" />
-</LinearLayout>
+        android:textColorHint="#FFFFFF"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="@+id/timeLimitEditText"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/pointLimitEditText"
+        app:layout_constraintTop_toBottomOf="@+id/timeLimitEditText" />
+
+    <EditText
+        android:id="@+id/pointLimitEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="64dp"
+        android:ems="10"
+        android:hint="@string/point_limit"
+        android:inputType="number"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/timeLimitEditText"
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameOptionsTextView" />
+
+    <EditText
+        android:id="@+id/timeLimitEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="88dp"
+        android:ems="10"
+        android:hint="@string/time_limit_per_turn"
+        android:inputType="number"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameOptionsTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,8 +52,8 @@ public class JoinGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Button continueGame = view.findViewById(R.id.createGameButton);
-        final EditText roomCodeTextView = view.findViewById(R.id.gameTextNumber);
+        final Button continueGame = view.findViewById(R.id.joinGameButton);
+        final EditText roomCodeTextView = view.findViewById(R.id.roomCodeTextView);
 
 
         continueGame.setOnClickListener(v -> {

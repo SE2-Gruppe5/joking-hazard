@@ -20,21 +20,32 @@ import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
-public class JoinGameEnterNameFragment extends Fragment {
+public class EnterNameFragment extends Fragment {
 
     private Socket socket;
 
-    public JoinGameEnterNameFragment() {
+    private static final String ARG_ACTION = "action";
+
+    private int action;
+
+    public EnterNameFragment() {
         // Required empty public constructor
     }
 
-    public static JoinGameEnterNameFragment newInstance() {
-        return new JoinGameEnterNameFragment();
+    public static EnterNameFragment newInstance(int action) {
+        EnterNameFragment fragment = new EnterNameFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_ACTION, action);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            action = getArguments().getInt(ARG_ACTION);
+        }
     }
 
     @Override
@@ -44,15 +55,15 @@ public class JoinGameEnterNameFragment extends Fragment {
 
         socket = ((MainActivity) requireActivity()).mSocket;
 
-        return inflater.inflate(R.layout.fragment_join_game_enter_name, container, false);
+        return inflater.inflate(R.layout.fragment_enter_name, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final Button joinGame = view.findViewById(R.id.joinGameButton);
-        final TextView textViewPlayerName = view.findViewById(R.id.editTextPersonName);
+        final Button joinGame = view.findViewById(R.id.continueButton);
+        final TextView textViewPlayerName = view.findViewById(R.id.nameEditText);
 
 
         joinGame.setOnClickListener(v -> {
@@ -66,7 +77,7 @@ public class JoinGameEnterNameFragment extends Fragment {
                     try {
                         if (response.getString("status").equals("ok")) {
                             // navigieren zu gamemodeselection --> dort wird raum erstellt nach auswahl
-                            Navigation.findNavController(v).navigate(R.id.action_joinGameEnterNameFragment_to_joinGameFragment);
+                            Navigation.findNavController(v).navigate(action);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

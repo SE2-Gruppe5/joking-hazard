@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Joking Hazard</string>
     <string name="name_prompt">Enter your Name</string>
-    <string name="name_placeholder">Mein Name</string>
+    <string name="name_placeholder">My name</string>
     <string name="create_game_button">Create Game</string>
     <string name="enter_room_code">Enter Room Code</string>
     <string name="continue_button">Continue</string>
@@ -9,11 +9,9 @@
     <string name="room_code_message">This is your Room Code! Go tell your friends about it</string>
     <string name="start_game_button">Start Game</string>
     <string name="room_code_placeholder">1234</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="choose_gamemode">Game options</string>
-    <string name="jerkmode">JerkMode</string>
-    <string name="marathon">Marathon</string>
     <string name="save_option_button">Create Game</string>
     <string name="normal">Normal</string>
+    <string name="point_limit">Point Limit</string>
+    <string name="time_limit_per_turn">Time Limit per Turn</string>
 </resources>
