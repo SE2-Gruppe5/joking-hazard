@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class GameBoardFragment extends Fragment {
 
@@ -55,5 +57,14 @@ public class GameBoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        socket.on("all_cards_played", onAllCardsPlayed);
     }
+
+    private Emitter.Listener onAllCardsPlayed = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            
+        }
+    };
+
 }

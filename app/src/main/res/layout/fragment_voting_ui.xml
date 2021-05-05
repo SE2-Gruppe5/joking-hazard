@@ -5,7 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.VotingUIFragment">
+    tools:context=".fragments.VotingUIFragment"
+    android:background="#66141414"
+    >
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +28,9 @@
             android:layout_height="wrap_content"
             android:text="@string/yourStory"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="160dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Deck"
+                android:contentDescription="@string/playedCardFromDeck"
                 app:srcCompat="@drawable/transparent" />
 
             <ImageView
@@ -45,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="160dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Judge"
+                android:contentDescription="@string/playedCardFromJudge"
                 app:srcCompat="@drawable/transparent" />
 
             <ImageView
@@ -53,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="160dp"
                 android:layout_weight="1"
-                android:contentDescription="ComicStoryImg_Winner"
+                android:contentDescription="@string/playedCardFromWinner"
                 app:srcCompat="@drawable/transparent" />
         </LinearLayout>
 
@@ -67,14 +72,16 @@
             android:layout_height="wrap_content"
             android:text="@string/chooseStory"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            />
 
         <LinearLayout
             android:id="@+id/layoutImgButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <!-- ToDo Image Buttons werden zukünftig automatisch erstellt werden je nach Spielerzahl NUR zu Presentations zwecken noch vorhanden-->
             <ImageButton
                 android:id="@+id/cardOfPlayer1"
                 android:layout_width="wrap_content"
@@ -102,21 +109,15 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/transparent" />
 
-            <ImageButton
-                android:id="@+id/cardOfPlayer4"
-                android:layout_width="wrap_content"
-                android:layout_height="140dp"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/transparent" />
-
         </LinearLayout>
 
         <Button
             android:id="@+id/confirmStory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm" />
+            android:background="@color/green"
+            android:enabled="false"
+            android:text="@string/confirm_button"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

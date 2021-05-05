@@ -3,16 +3,21 @@ package at.derfl007.jokinghazard.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import java.util.ArrayList;
+
+import at.derfl007.jokinghazard.activities.MainActivity;
+import io.socket.client.Socket;
 
 import at.derfl007.jokinghazard.R;
 
@@ -23,6 +28,8 @@ public class VotingUIFragment extends Fragment {
     private int storyLeanght = 2;   //paramter to determine the leanght of the Story
     private ArrayList<Integer> playedCards;
     private ArrayList<ImageButton> possibleCards;
+
+    private Socket socket;
 
     public VotingUIFragment() {
         // Required empty public constructor
@@ -53,6 +60,8 @@ public class VotingUIFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        socket = ((MainActivity) requireActivity()).mSocket;
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_voting_ui, container, false);
     }
@@ -72,10 +81,12 @@ public class VotingUIFragment extends Fragment {
     private ImageButton createImageButton(int id){
         LinearLayout layout = (LinearLayout) getView().findViewById(R.id.layoutImgButtons);
         ImageButton imgButton = new ImageButton(getContext());
-        imgButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imgButton.setScaleType(ImageButton.ScaleType.FIT_CENTER);
         imgButton.setImageResource(id);
+        layout.addView(imgButton);
         imgButton.setOnClickListener(x -> {
                 addingPictureToStory(id);
+                enableConfirmationButton();
         });
         return imgButton;
     }
@@ -83,5 +94,14 @@ public class VotingUIFragment extends Fragment {
     private void addingPictureToStory(int id){
         ImageView card = (ImageView) getView().findViewById(R.id.ComicStoryImg_Winner);
         card.setImageResource(id);
+    }
+
+    private void enableConfirmationButton(){
+        Button confirmBtn = getView().findViewById(R.id.confirmStory);
+        confirmBtn.setEnabled(true);
+        confirmBtn.setOnClickListener(x -> {
+                // ToDo send an Event and get the User who ownes the Card
+                // ToDo nav to this Fragment in gameboard
+        });
     }
 }
