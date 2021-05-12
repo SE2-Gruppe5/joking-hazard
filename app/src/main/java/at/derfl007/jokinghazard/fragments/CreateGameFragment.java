@@ -15,6 +15,8 @@ import androidx.navigation.Navigation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import io.socket.client.Ack;
@@ -48,31 +50,26 @@ public class CreateGameFragment extends Fragment {
 
         final Button createGame = view.findViewById(R.id.saveOptionsButton);
         createGame.setOnClickListener(v -> {
-            socket.emit("room:create", (Ack) args1 -> {
+            socket.emit("room:create", (Ack) args1 -> requireActivity().runOnUiThread(() -> {
+                JSONObject response1 = (JSONObject) args1[0];
 
-                // socket.emit() wird standardmäßig nicht auf dem UI Thread ausgeführt.
-                // navigate muss allerdings am UI Thread ausgeführt werden
-                getActivity().runOnUiThread(() -> {
-                    JSONObject response1 = (JSONObject) args1[0];
+                try {
+                    // wenn server ok sendet --> Navigation
+                    if (response1.getString("status").equals("ok")) {
 
-                    try {
-                        // wenn server ok sendet --> Navigation
-                        if (response1.getString("status").equals("ok")) {
+                        // für roomCode übergabe an waiting room
+                        Bundle bundle = new Bundle();
+                        bundle.putString("roomCode", response1.getString("roomCode"));
+                        Navigation.findNavController(v).navigate(R.id.action_createGameFragment_to_waitingRoomFragment, bundle);
 
-                            // für roomCode übergabe an waiting room
-                            Bundle bundle = new Bundle();
-                            bundle.putString("roomCode", response1.getString("roomCode"));
-                            Navigation.findNavController(v).navigate(R.id.action_createGameFragment_to_waitingRoomFragment, bundle);
-
-                        } else {
-                            // TODO : Handle Exception Sprint 3
-                            Log.e("error", "error");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    } else {
+                        // TODO : Handle Exception Sprint 3
+                        Log.e("error", "error");
                     }
-                });
-            });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }));
 
         });
 

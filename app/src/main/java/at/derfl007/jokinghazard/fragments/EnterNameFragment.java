@@ -1,6 +1,7 @@
 package at.derfl007.jokinghazard.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.navigation.Navigation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
@@ -69,21 +72,20 @@ public class EnterNameFragment extends Fragment {
         joinGame.setOnClickListener(v -> {
 
             String playerName = textViewPlayerName.getText().toString();
+            Log.d("DEBUG", socket.connected() ? "Connected" : "Not connected");
 
             // TODO Network stuff
-            socket.emit("user:name:change", playerName, (Ack) args -> {
-                getActivity().runOnUiThread(() -> {
-                    JSONObject response = (JSONObject) args[0];
-                    try {
-                        if (response.getString("status").equals("ok")) {
-                            // navigieren zu gamemodeselection --> dort wird raum erstellt nach auswahl
-                            Navigation.findNavController(v).navigate(action);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            socket.emit("user:name:change", playerName, (Ack) args -> requireActivity().runOnUiThread(() -> {
+                JSONObject response = (JSONObject) args[0];
+                try {
+                    if (response.getString("status").equals("ok")) {
+                        // navigieren zu gamemodeselection --> dort wird raum erstellt nach auswahl
+                        Navigation.findNavController(v).navigate(action);
                     }
-                });
-            });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }));
         });
     }
 }

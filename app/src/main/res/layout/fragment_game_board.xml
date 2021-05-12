@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.GameBoardFragment">
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -165,7 +162,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/cardStack"
+                android:id="@+id/pileDeck"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -174,7 +171,7 @@
                 android:src="@drawable/stapel" />
 
             <ImageButton
-                android:id="@+id/drawCard"
+                android:id="@+id/pileDiscard"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -189,7 +186,7 @@
                 android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/gameCard1"
+                android:id="@+id/pilePanel1"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -199,7 +196,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/gameCard2"
+                android:id="@+id/pilePanel2"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -209,7 +206,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/gameCard3"
+                android:id="@+id/pilePanel3"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -218,28 +215,13 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/transparent" />
 
-            <ImageButton
-                android:id="@+id/playerGameCard1"
-                android:layout_width="136dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
-                android:hapticFeedbackEnabled="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/transparent" />
+            <Space
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <ImageButton
-                android:id="@+id/playerGameCard2"
-                android:layout_width="136dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
-                android:hapticFeedbackEnabled="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/transparent" />
-
-            <ImageButton
-                android:id="@+id/playerGameCard3"
+                android:id="@+id/pileSubmission"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -288,7 +270,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/playerCard1"
+                android:id="@+id/pilePlayer1"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -298,7 +280,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard2"
+                android:id="@+id/pilePlayer2"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -308,7 +290,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard3"
+                android:id="@+id/pilePlayer3"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -318,7 +300,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard4"
+                android:id="@+id/pilePlayer4"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -328,7 +310,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard5"
+                android:id="@+id/pilePlayer5"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -338,7 +320,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard6"
+                android:id="@+id/pilePlayer6"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -348,7 +330,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard7"
+                android:id="@+id/pilePlayer7"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -358,7 +340,7 @@
                 android:src="@drawable/transparent" />
 
             <ImageButton
-                android:id="@+id/playerCard8"
+                android:id="@+id/pilePlayer8"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -370,6 +352,47 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/votingUiOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:background="#000000"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerView"
+            android:name="at.derfl007.jokinghazard.fragments.VotingUIFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:background="#000000"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/waiting_for_players" />
+    </LinearLayout>
+
+
+</FrameLayout>
 
