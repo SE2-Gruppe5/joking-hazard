@@ -3,7 +3,6 @@ package at.derfl007.jokinghazard.fragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,6 +19,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
@@ -39,31 +39,34 @@ public class GameBoardFragment extends Fragment {
     }
 
     enum PILES {
-        DECK(new int[] {R.id.pileDeck}),
-        PLAYER_1(new int[] {1000389, 1000391, 1000373, 1000375, 1000377, 1000378, 1000380, 1000381}),
-        PLAYER_2(null),
-        PLAYER_3(null),
-        PLAYER_4(null),
-        PANEL_1(new int[] {1000281}),
-        PANEL_2(new int[] {1000291}),
-        PANEL_3(new int[] {1000290}),
-        SUBMISSION(new int[] {1000324}),
-        DISCARD(new int[] {1000306});
+        DECK(0, new int[]{R.id.pileDeck}),
+        PLAYER_1(1, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_2(2, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_3(3, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_4(4, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PANEL_1(5, new int[]{R.id.pilePanel1}),
+        PANEL_2(6, new int[]{R.id.pilePanel2}),
+        PANEL_3(7, new int[]{R.id.pilePanel3}),
+        SUBMISSION(8, new int[]{R.id.pileSubmission}),
+        DISCARD(9, new int[]{R.id.pileSubmission});
 
-        private int[] imageButtonIds;
+        private final int id;
+        private final int[] imageButtonIds;
 
-        PILES(int[] imageButtonIds) {
+        PILES(int id, int[] imageButtonIds) {
             this.imageButtonIds = imageButtonIds;
+            this.id = id;
         }
 
-        void setImageButtonIds(int[] imageButtonIds) {
-            this.imageButtonIds = imageButtonIds;
-        }
-
-        int[] getImageButtonIds() {
-            return this.imageButtonIds;
+        private static PILES getPileById(int id) {
+            for (PILES pile : values()) {
+                if (pile.id == id) return pile;
+            }
+            return null;
         }
     }
+
+    private PILES playerPile;
 
     private static final String ARG_ROOM_CODE = "roomCode";
 
@@ -105,27 +108,12 @@ public class GameBoardFragment extends Fragment {
 
         String[] playerIds = new String[4];
 
-        PILES.PLAYER_1.setImageButtonIds(new int[] {R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8});
-
-        socket.emit("room:players", roomCode, (Ack) response -> {
-            JSONObject jsonResponse = (JSONObject) response[0];
-            try {
-                JSONArray players = jsonResponse.getJSONArray("users");
-
-                for (int i = 0; i < players.length(); i++) {
-                    playerIds[i] = players.getJSONObject(i).getString("id");
-                    // TODO Set user names
-                }
-            } catch (JSONException | ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-        });
-
         AtomicBoolean isAdmin = new AtomicBoolean(false);
 
         socket.emit("user:data:get", socket.id(), (Ack) response -> {
             JSONObject jsonResponse = (JSONObject) response[0];
             try {
+                Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
                 isAdmin.set(jsonResponse.getJSONObject("userData").getBoolean("admin"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -134,81 +122,104 @@ public class GameBoardFragment extends Fragment {
 
         socket.emit("room:enteredGame");
 
-        socket.on("room:ready_to_play", (obj) -> view.findViewById(R.id.overlay).setVisibility(View.GONE));
+        socket.on("room:ready_to_play", (obj) -> requireActivity().runOnUiThread(() -> {
+            view.findViewById(R.id.overlay).setVisibility(View.GONE);
+            socket.emit("room:players", roomCode, (Ack) response -> requireActivity().runOnUiThread(() -> {
+                JSONObject jsonResponse = (JSONObject) response[0];
+                try {
+                    Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
+                    JSONArray players = jsonResponse.getJSONArray("users");
 
-        socket.on("card:moved", this::cardMoved);
+                    for (int i = 0; i < players.length(); i++) {
+                        playerIds[i] = players.getJSONObject(i).getString("id");
+                        if (playerIds[i].equals(socket.id())) {
+                            this.playerPile = PILES.getPileById(i);
+                        }
+                        // TODO Set user names
+                    }
 
-        socket.on("room:your_turn", this::gameTurn);
+                    for (int i = 0; i < PILES.PLAYER_1.imageButtonIds.length - 1; i++) {
+                        moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
+                    }
+                } catch (JSONException | ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
+            }));
+        }));
 
-        socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(()-> {
-            // TODO Load a Fragment over the GameboardFragment not just replace the GameboardFragment
-//            Navigation.findNavController(view).navigate(R.id.action_gameBoardFragment_to_votingUIFragment);
+        socket.on("card:moved", (response) -> cardMoved(view, response));
+
+        socket.on("room:your_turn", (response) -> gameTurn(view, response));
+
+        socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(() -> {
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
             votingUi.setVisibility(View.VISIBLE);
         }));
-        socket.emit("user:points:add", (Ack) args -> {
-            // TODO adding points to a player
-        });
+//        socket.emit("user:points:add", (Ack) args -> {
+//            // TODO adding points to a player
+//        });
     }
 
-    private void cardMoved(Object response) {
+    private void cardMoved(View view, Object response) {
         JSONObject jsonResponse = (JSONObject) response;
         try {
+            Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
             PILES sourcePile = PILES.values()[jsonResponse.getInt("sourcePile")];
             PILES targetPile = PILES.values()[jsonResponse.getInt("targetPile")];
             String cardId = jsonResponse.getString("cardId");
             int index = jsonResponse.getInt("index");
 
-            setImageButtonCard(sourcePile, "-1", index);
-            setImageButtonCard(targetPile, cardId, index);
+            setImageButtonCard(view, sourcePile, "-1", index);
+            setImageButtonCard(view, targetPile, cardId, index);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void moveCard(PILES sourcePile, PILES targetPile, int sourceIndex, int targetIndex) {
-        String cardId = (String) requireView().findViewById(sourcePile.getImageButtonIds()[sourceIndex]).getTag();
-        socket.emit("card:move", cardId, sourcePile, targetPile, sourceIndex, targetIndex, (Ack) response -> {
-            // TODO Do something with output
+    private void moveCard(int sourcePile, int targetPile, int sourceIndex, int targetIndex) {
+        socket.emit("card:move", "123", sourcePile, targetPile, sourceIndex, targetIndex, (Ack) response -> {
+            JSONObject jsonResponse = (JSONObject) response[0];
+            try {
+                Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
     }
 
-    private void gameTurn(Object[] response) {
+    private void gameTurn(View view, Object[] response) {
         JSONObject jsonResponse = (JSONObject) response[0];
         boolean judge = false;
         try {
+            Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
             judge = jsonResponse.getBoolean("judge");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if (judge) {
-            Log.d("DEBUG", "id for deck: " + PILES.DECK.imageButtonIds[0]);
-            ImageButton deck = requireView().findViewById(PILES.DECK.imageButtonIds[0]);
+            ImageButton deck = view.findViewById(R.id.pileDeck);
             deck.setEnabled(true);
             deck.setOnClickListener(v -> {
                 // TODO Implement drag and drop here instead of the simple moveCard call
-                moveCard(PILES.DECK, PILES.PANEL_1, 0, 0);
+                moveCard(PILES.DECK.id, PILES.PANEL_1.id, 0, 0);
                 deck.setEnabled(false);
                 deck.setOnClickListener(null);
 
-                Log.d("DEBUG", "id deck: " + Arrays.toString(PILES.DECK.imageButtonIds));
-
                 for (int i = 0; i < 8; i++) {
-                    ImageButton player1ImageButton = v.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
-                    Log.d("DEBUG", "id for " + i + ": " + PILES.PLAYER_1.imageButtonIds[i]);
+                    ImageButton player1ImageButton = view.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
                     int finalI = i;
                     player1ImageButton.setOnClickListener(v1 -> {
                         // TODO Implement drag and drop here instead of the simple moveCard call
-                        moveCard(PILES.PLAYER_1, PILES.PANEL_2, finalI, 1);
+                        moveCard(this.playerPile.id, PILES.PANEL_2.id, finalI, 0);
                         for (int i1 = 0; i1 < 8; i1++) {
-                            ImageButton player1ImageButtonId1 = v1.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
+                            ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
                             player1ImageButtonId1.setEnabled(false);
                             player1ImageButtonId1.setOnClickListener(null);
                         }
                     });
                 }
                 for (int i = 0; i < 8; i++) {
-                    ImageButton player1ImageButtonId = v.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
+                    ImageButton player1ImageButtonId = view.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
                     player1ImageButtonId.setEnabled(true);
                 }
             });
@@ -219,7 +230,7 @@ public class GameBoardFragment extends Fragment {
                 int finalI = i;
                 player1ImageButtonId.setOnClickListener(v -> {
                     // TODO Implement drag and drop here instead of the simple moveCard call
-                    moveCard(PILES.PLAYER_1, PILES.SUBMISSION, finalI, 1);
+                    moveCard(this.playerPile.id, PILES.SUBMISSION.id, finalI, 1);
                     for (int i1 = 0; i1 < 8; i1++) {
                         ImageButton player1ImageButtonId1 = v.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
                         player1ImageButtonId1.setEnabled(false);
@@ -234,20 +245,21 @@ public class GameBoardFragment extends Fragment {
         }
     }
 
-    private void setImageButtonCard(PILES pile, String cardId, int index) {
-        if (pile.imageButtonIds != null) {
-            ImageButton imageButton = requireView().findViewById(pile.imageButtonIds[index]);
+    private void setImageButtonCard(View view, PILES pile, String cardId, int index) {
+        // If the pile is a player pile, check if it belongs to the player, otherwise do nothing
+        if ((pile.id < PILES.PLAYER_1.id || pile.id > PILES.PLAYER_4.id || pile.id == this.playerPile.id)) {
+            ImageButton imageButton = view.findViewById(pile.imageButtonIds[index]);
             if (cardId.equals("-1")) {
                 imageButton.setImageResource(R.drawable.transparent);
                 imageButton.setTag("-1");
             }
-            imageButton.setImageResource(getCardImageById(cardId));
+            imageButton.setImageResource(getCardImageById(view, cardId));
             imageButton.setTag(cardId);
         }
     }
 
-    private int getCardImageById(String cardId) {
-        Resources resources = requireContext().getResources();
-        return resources.getIdentifier("card_" + cardId + ".png", "drawable", requireContext().getPackageName());
+    private int getCardImageById(View view, String cardId) {
+        Resources resources = view.getContext().getResources();
+        return resources.getIdentifier("card_" + cardId, "drawable", view.getContext().getPackageName());
     }
 }
