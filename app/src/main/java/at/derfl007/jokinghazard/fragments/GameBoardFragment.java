@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,15 +31,8 @@ import io.socket.client.Socket;
 
 public class GameBoardFragment extends Fragment {
 
+    private static final int HAS_CARD = 0;
     private Socket socket;
-
-    enum GameState {
-        RECEIVING_CARDS,
-        WAITING_FOR_TURN,
-        PLAY_ENDING,
-        CHOOSE_ENDING,
-        PLAY_FIRST_PANELS
-    }
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
@@ -120,25 +116,31 @@ public class GameBoardFragment extends Fragment {
             }
         });
 
+        for (int i1 = 0; i1 < 8; i1++) {
+            ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
+            player1ImageButtonId1.setEnabled(false);
+            player1ImageButtonId1.setOnClickListener(null);
+        }
+
         socket.emit("room:enteredGame");
 
         socket.on("room:ready_to_play", (obj) -> requireActivity().runOnUiThread(() -> {
             view.findViewById(R.id.overlay).setVisibility(View.GONE);
-            socket.emit("room:players", roomCode, (Ack) response -> requireActivity().runOnUiThread(() -> {
+            socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
                 JSONObject jsonResponse = (JSONObject) response[0];
                 try {
-                    Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
+                    Log.d("RESPONSE", jsonResponse.toString());
                     JSONArray players = jsonResponse.getJSONArray("users");
 
                     for (int i = 0; i < players.length(); i++) {
                         playerIds[i] = players.getJSONObject(i).getString("id");
                         if (playerIds[i].equals(socket.id())) {
-                            this.playerPile = PILES.getPileById(i);
+                            this.playerPile = PILES.getPileById(i + 1);
                         }
                         // TODO Set user names
                     }
 
-                    for (int i = 0; i < PILES.PLAYER_1.imageButtonIds.length - 1; i++) {
+                    for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
                         moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
                     }
                 } catch (JSONException | ArrayIndexOutOfBoundsException e) {
@@ -147,55 +149,68 @@ public class GameBoardFragment extends Fragment {
             }));
         }));
 
-        socket.on("card:moved", (response) -> cardMoved(view, response));
+        socket.on("card:moved", (response) -> requireActivity().runOnUiThread(() -> cardMoved(view, response)));
 
-        socket.on("room:your_turn", (response) -> gameTurn(view, response));
+        socket.on("room:your_turn", (response) -> requireActivity().runOnUiThread(() -> gameTurn(view, response)));
 
         socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(() -> {
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
             votingUi.setVisibility(View.VISIBLE);
+            // TODO Load cards into imageviews add points to winning player and tell the others who won the round (requires server changes)
+//            socket.emit("user:points:add", <id>, <points>, (Ack) args -> {});
+            votingUi.setVisibility(View.GONE);
+            for (int i = 0; i < playerIds.length - 1; i++) {
+                moveCard(PILES.SUBMISSION.id, PILES.DISCARD.id, i, 0);
+            }
         }));
-//        socket.emit("user:points:add", (Ack) args -> {
-//            // TODO adding points to a player
-//        });
     }
 
-    private void cardMoved(View view, Object response) {
-        JSONObject jsonResponse = (JSONObject) response;
+    private void cardMoved(View view, Object[] response) {
+        JSONObject jsonResponse = (JSONObject) response[0];
         try {
-            Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
-            PILES sourcePile = PILES.values()[jsonResponse.getInt("sourcePile")];
-            PILES targetPile = PILES.values()[jsonResponse.getInt("targetPile")];
+            Log.d("RESPONSE", jsonResponse.toString());
+            PILES sourcePile = PILES.getPileById(jsonResponse.getInt("sourcePile"));
+            PILES targetPile = PILES.getPileById(jsonResponse.getInt("targetPile"));
+            int sourceIndex = jsonResponse.getInt("sourceIndex");
+            int targetIndex = jsonResponse.getInt("targetIndex");
             String cardId = jsonResponse.getString("cardId");
-            int index = jsonResponse.getInt("index");
-
-            setImageButtonCard(view, sourcePile, "-1", index);
-            setImageButtonCard(view, targetPile, cardId, index);
+            setImageButtonCard(view, sourcePile, "-1", sourceIndex);
+            setImageButtonCard(view, targetPile, cardId, targetIndex);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     private void moveCard(int sourcePile, int targetPile, int sourceIndex, int targetIndex) {
-        socket.emit("card:move", "123", sourcePile, targetPile, sourceIndex, targetIndex, (Ack) response -> {
+        socket.emit("card:move", sourcePile, targetPile, sourceIndex, targetIndex, (Ack) response -> requireActivity().runOnUiThread(() -> {
             JSONObject jsonResponse = (JSONObject) response[0];
-            try {
-                Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
+            Log.d("RESPONSE", jsonResponse.toString());
+        }));
     }
 
     private void gameTurn(View view, Object[] response) {
-        JSONObject jsonResponse = (JSONObject) response[0];
-        boolean judge = false;
-        try {
-            Log.d("RESPONSE", jsonResponse.getString("status") + ", " + jsonResponse.getString("msg"));
-            judge = jsonResponse.getBoolean("judge");
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+        for (int i = 0; i < this.playerPile.imageButtonIds.length; i++) {
+            ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
+            if (!(boolean) imageButton.getTag(HAS_CARD)) {
+                moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
+            }
         }
+
+        Snackbar.make(view, "Your turn!", Snackbar.LENGTH_SHORT).show();
+
+        boolean judge = false;
+
+        if (response.length > 0) {
+            JSONObject jsonResponse = (JSONObject) response[0];
+
+            try {
+                judge = jsonResponse.getBoolean("judge");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (judge) {
             ImageButton deck = view.findViewById(R.id.pileDeck);
             deck.setEnabled(true);
@@ -216,6 +231,7 @@ public class GameBoardFragment extends Fragment {
                             player1ImageButtonId1.setEnabled(false);
                             player1ImageButtonId1.setOnClickListener(null);
                         }
+                        socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
                     });
                 }
                 for (int i = 0; i < 8; i++) {
@@ -230,12 +246,13 @@ public class GameBoardFragment extends Fragment {
                 int finalI = i;
                 player1ImageButtonId.setOnClickListener(v -> {
                     // TODO Implement drag and drop here instead of the simple moveCard call
-                    moveCard(this.playerPile.id, PILES.SUBMISSION.id, finalI, 1);
+                    moveCard(this.playerPile.id, PILES.SUBMISSION.id, finalI, 0);
                     for (int i1 = 0; i1 < 8; i1++) {
-                        ImageButton player1ImageButtonId1 = v.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
+                        ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
                         player1ImageButtonId1.setEnabled(false);
                         player1ImageButtonId1.setOnClickListener(null);
                     }
+                    socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
                 });
             }
             for (int i = 0; i < 8; i++) {
@@ -245,16 +262,20 @@ public class GameBoardFragment extends Fragment {
         }
     }
 
-    private void setImageButtonCard(View view, PILES pile, String cardId, int index) {
+    private void setImageButtonCard(View view, PILES pile, @NonNull String cardId, int index) {
         // If the pile is a player pile, check if it belongs to the player, otherwise do nothing
-        if ((pile.id < PILES.PLAYER_1.id || pile.id > PILES.PLAYER_4.id || pile.id == this.playerPile.id)) {
+        if (pile != PILES.DECK && (pile.id < PILES.PLAYER_1.id || pile.id > PILES.PLAYER_4.id || pile.id == this.playerPile.id)) {
             ImageButton imageButton = view.findViewById(pile.imageButtonIds[index]);
             if (cardId.equals("-1")) {
                 imageButton.setImageResource(R.drawable.transparent);
-                imageButton.setTag("-1");
+                imageButton.setTag(HAS_CARD, true);
+            } else if (pile == PILES.SUBMISSION) {
+                imageButton.setImageResource(R.drawable.back);
+                imageButton.setTag(HAS_CARD, true);
+            } else {
+                imageButton.setImageResource(getCardImageById(view, cardId));
+                imageButton.setTag(HAS_CARD, true);
             }
-            imageButton.setImageResource(getCardImageById(view, cardId));
-            imageButton.setTag(cardId);
         }
     }
 
