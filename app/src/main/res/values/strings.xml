@@ -24,4 +24,5 @@
     <string name="normal">Normal</string>
     <string name="point_limit">Point Limit</string>
     <string name="time_limit_per_turn">Time Limit per Turn</string>
+    <string name="waiting_for_players">Waiting for players</string>
 </resources>

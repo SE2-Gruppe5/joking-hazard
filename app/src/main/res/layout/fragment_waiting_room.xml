@@ -49,6 +49,7 @@
             android:text="@string/start_game_button"
             android:textColor="#FFFFFF"
             android:textColorHint="#F8F0F0"
+            android:visibility="invisible"
             app:backgroundTint="@null" />
     </LinearLayout>
 
@@ -99,7 +100,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Alena"
         android:textColor="#2196F3"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -113,7 +113,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Florian"
         android:textColor="#4CAF50"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -127,7 +126,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Nico"
         android:textColor="#FF9800"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -141,7 +139,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Felix"
         android:textColor="#DAC08F"
         android:textSize="20sp"
         android:textStyle="bold"
