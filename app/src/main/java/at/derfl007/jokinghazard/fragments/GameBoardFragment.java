@@ -43,8 +43,8 @@ public class GameBoardFragment extends Fragment {
         PANEL_1(5, new int[]{R.id.pilePanel1}),
         PANEL_2(6, new int[]{R.id.pilePanel2}),
         PANEL_3(7, new int[]{R.id.pilePanel3}),
-        SUBMISSION(8, new int[]{R.id.pileSubmission}),
-        DISCARD(9, new int[]{R.id.pileSubmission});
+        SUBMISSION(8, new int[]{R.id.pileSubmission, R.id.pileSubmission, R.id.pileSubmission}),
+        DISCARD(9, new int[]{R.id.pileDiscard});
 
         private final int id;
         private final int[] imageButtonIds;
@@ -54,11 +54,11 @@ public class GameBoardFragment extends Fragment {
             this.id = id;
         }
 
-        private static PILES getPileById(int id) {
+        private static PILES getPileById(int id) throws IllegalArgumentException {
             for (PILES pile : values()) {
                 if (pile.id == id) return pile;
             }
-            return null;
+            throw new IllegalArgumentException("Invalid pile id");
         }
     }
 
@@ -122,36 +122,43 @@ public class GameBoardFragment extends Fragment {
             player1ImageButtonId1.setOnClickListener(null);
         }
 
-        socket.emit("room:enteredGame");
+        socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
+            JSONObject jsonResponse = (JSONObject) response[0];
+            try {
+                Log.d("RESPONSE", jsonResponse.toString());
+                JSONArray players = jsonResponse.getJSONArray("users");
+                Log.d("DEBUG", "id of socket is " + socket.id());
 
-        socket.on("room:ready_to_play", (obj) -> requireActivity().runOnUiThread(() -> {
-            view.findViewById(R.id.overlay).setVisibility(View.GONE);
-            socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
-                JSONObject jsonResponse = (JSONObject) response[0];
-                try {
-                    Log.d("RESPONSE", jsonResponse.toString());
-                    JSONArray players = jsonResponse.getJSONArray("users");
+                for (int i = 0; i < players.length(); i++) {
+                    playerIds[i] = players.getJSONObject(i).getString("id");
+                    Log.d("DEBUG", "id of i=" + i + " is " + playerIds[i]);
+                    if (playerIds[i].equals(socket.id())) {
+                        this.playerPile = PILES.getPileById(i + 1);
+                        Log.d("DEBUG", String.valueOf(this.playerPile.id));
 
-                    for (int i = 0; i < players.length(); i++) {
-                        playerIds[i] = players.getJSONObject(i).getString("id");
-                        if (playerIds[i].equals(socket.id())) {
-                            this.playerPile = PILES.getPileById(i + 1);
-                        }
-                        // TODO Set user names
                     }
-
-                    for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
-                        moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
-                    }
-                } catch (JSONException | ArrayIndexOutOfBoundsException e) {
-                    e.printStackTrace();
+                    // TODO Set user names
                 }
-            }));
+
+                for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
+                    moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
+                }
+
+                socket.emit("room:enteredGame");
+
+            } catch (JSONException | ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }));
 
-        socket.on("card:moved", (response) -> requireActivity().runOnUiThread(() -> cardMoved(view, response)));
+        socket.on("room:ready_to_play", (obj) -> requireActivity().runOnUiThread(() -> {
+            Log.d("RESPONSE", "ready to play received");
+            view.findViewById(R.id.overlay).setVisibility(View.GONE);
+        }));
 
-        socket.on("room:your_turn", (response) -> requireActivity().runOnUiThread(() -> gameTurn(view, response)));
+        socket.on("room:your_turn", (response1) -> requireActivity().runOnUiThread(() -> gameTurn(view, response1)));
+
+        socket.on("card:moved", (response) -> requireActivity().runOnUiThread(() -> cardMoved(view, response)));
 
         socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(() -> {
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
@@ -162,6 +169,8 @@ public class GameBoardFragment extends Fragment {
             for (int i = 0; i < playerIds.length - 1; i++) {
                 moveCard(PILES.SUBMISSION.id, PILES.DISCARD.id, i, 0);
             }
+            moveCard(PILES.PANEL_1.id, PILES.DISCARD.id, 0, 0);
+            moveCard(PILES.PANEL_2.id, PILES.DISCARD.id, 0, 0);
         }));
     }
 
@@ -189,10 +198,10 @@ public class GameBoardFragment extends Fragment {
     }
 
     private void gameTurn(View view, Object[] response) {
-
-        for (int i = 0; i < this.playerPile.imageButtonIds.length; i++) {
+        for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
             ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
-            if (!(boolean) imageButton.getTag(HAS_CARD)) {
+            Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag());
+            if (!(boolean) imageButton.getTag()) {
                 moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
             }
         }
@@ -203,7 +212,7 @@ public class GameBoardFragment extends Fragment {
 
         if (response.length > 0) {
             JSONObject jsonResponse = (JSONObject) response[0];
-
+            Log.d("RESPONSE", jsonResponse.toString());
             try {
                 judge = jsonResponse.getBoolean("judge");
             } catch (JSONException e) {
@@ -268,13 +277,13 @@ public class GameBoardFragment extends Fragment {
             ImageButton imageButton = view.findViewById(pile.imageButtonIds[index]);
             if (cardId.equals("-1")) {
                 imageButton.setImageResource(R.drawable.transparent);
-                imageButton.setTag(HAS_CARD, true);
+                imageButton.setTag(false);
             } else if (pile == PILES.SUBMISSION) {
                 imageButton.setImageResource(R.drawable.back);
-                imageButton.setTag(HAS_CARD, true);
+                imageButton.setTag(true);
             } else {
                 imageButton.setImageResource(getCardImageById(view, cardId));
-                imageButton.setTag(HAS_CARD, true);
+                imageButton.setTag(true);
             }
         }
     }
