@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -267,6 +268,8 @@ public class GameBoardFragment extends Fragment {
                             player1ImageButtonId1.setOnClickListener(null);
                         }
                         socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                        countDownTimer.cancel();
+                        timerText.setVisibility(View.INVISIBLE);
                     });
                 }
                 for (int i = 0; i < 8; i++) {
@@ -288,6 +291,8 @@ public class GameBoardFragment extends Fragment {
                         player1ImageButtonId1.setOnClickListener(null);
                     }
                     socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                    countDownTimer.cancel();
+                    timerText.setVisibility(View.INVISIBLE);
                 });
             }
             for (int i = 0; i < 8; i++) {
@@ -300,12 +305,13 @@ public class GameBoardFragment extends Fragment {
     private void startTimer(boolean judge) {
 
         Log.d("Debug", "Timer started");
+        // wenn Timer gestartet wird --> anzeigen
         timerText.setVisibility(View.VISIBLE);
 
-        endTime = System.currentTimeMillis() + timeLeftInMillis;
+        endTime = System.currentTimeMillis() + startTimeMillis;
 
         // Countdown Intervall 1000 --> alle Sekunden
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        countDownTimer = new CountDownTimer(startTimeMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Log.d("Debug", "On Tick");
@@ -322,9 +328,40 @@ public class GameBoardFragment extends Fragment {
             @Override
             public void onFinish() {
                 timerRunning = false;
-                // check if judge --> wenn ja karte von deck und auf panel --> gameTurn steht es
-                // Random Karte ausführen (Random Zahl 0-6) --> moveCard (this.playerPile.id, )
+
+                // check if judge --> wenn ja karte von deck und auf panel
+                // Random Karte ausführen (Random Zahl 0-6)
                 // Zug beenden
+
+                // Random Zahl für Random Karte
+                int random = (int) (Math.random() * 7);
+
+                // check if judge
+                if (judge) {
+
+                    ImageButton deck = requireView().findViewById(R.id.pileDeck);
+                    moveCard(PILES.DECK.id, PILES.PANEL_1.id, 0, 0);
+                    deck.setEnabled(false);
+                    deck.setOnClickListener(null);
+
+                    // nach Ablauf des Timers wird zufällige Karte gelegt
+                    moveCard(playerPile.id, PILES.PANEL_2.id, random, 0); // statt final random, random card aus deck
+
+                } else {
+                    // nach Ablauf des Timers wird zufällige Karte gelegt
+                    moveCard(playerPile.id, PILES.SUBMISSION.id, random, 0);
+                }
+
+                for (int i1 = 0; i1 < 8; i1++) {
+                    ImageButton player1ImageButtonId1 = requireView().findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
+                    player1ImageButtonId1.setEnabled(false);
+                    player1ImageButtonId1.setOnClickListener(null);
+                }
+
+                socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+
+                // wenn Player fertig wird Timer anzeige unsichtbar
+                timerText.setVisibility(View.INVISIBLE);
             }
         }.start();
         timerRunning = true;
@@ -332,12 +369,14 @@ public class GameBoardFragment extends Fragment {
 
     private void setTime(long millisInput) {
         startTimeMillis = millisInput * 1000;
-        resetTimer();
+        // resetTimer();
     }
 
+    /*
     private void resetTimer() {
         timeLeftInMillis = startTimeMillis;
     }
+    */
 
     private void setImageButtonCard(View view, PILES pile, @NonNull String cardId, int index) {
         // If the pile is a player pile, check if it belongs to the player, otherwise do nothing
