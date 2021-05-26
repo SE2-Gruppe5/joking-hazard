@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,9 +49,13 @@ public class CreateGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        EditText time = view.findViewById(R.id.timeLimitEditText);
+
+
         final Button createGame = view.findViewById(R.id.saveOptionsButton);
         createGame.setOnClickListener(v -> {
-            socket.emit("room:create", (Ack) args1 -> requireActivity().runOnUiThread(() -> {
+            long timeLimit = Long.parseLong(time.getText().toString());
+            socket.emit("room:create", timeLimit,(Ack) args1 -> requireActivity().runOnUiThread(() -> {
                 JSONObject response1 = (JSONObject) args1[0];
 
                 try {
