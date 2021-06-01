@@ -6,13 +6,16 @@ import androidx.fragment.app.Fragment;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.JsonToken;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -21,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +38,15 @@ public class GameBoardFragment extends Fragment {
 
     private static final int HAS_CARD = 0;
     private Socket socket;
+
+
+    private long startTimeMillis;
+    private long endTime;
+    private long timeLeftInMillis;
+    private CountDownTimer countDownTimer;
+    private TextView timerText;
+    private boolean timerRunning;
+
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
@@ -102,6 +116,8 @@ public class GameBoardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        timerText = view.findViewById(R.id.timerTextView);
+
         String[] playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
@@ -152,6 +168,12 @@ public class GameBoardFragment extends Fragment {
         }));
 
         socket.on("room:ready_to_play", (obj) -> requireActivity().runOnUiThread(() -> {
+            try {
+                long time = ((JSONObject) obj[0]).getInt("timeLimit");
+                setTime(time);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             Log.d("RESPONSE", "ready to play received");
             view.findViewById(R.id.overlay).setVisibility(View.GONE);
         }));
@@ -198,17 +220,20 @@ public class GameBoardFragment extends Fragment {
     }
 
     private void gameTurn(View view, Object[] response) {
+
         for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
             ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
             Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag());
             if (!(boolean) imageButton.getTag()) {
                 moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
             }
+
         }
 
         Snackbar.make(view, "Your turn!", Snackbar.LENGTH_SHORT).show();
 
         boolean judge = false;
+
 
         if (response.length > 0) {
             JSONObject jsonResponse = (JSONObject) response[0];
@@ -219,6 +244,8 @@ public class GameBoardFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+
+        startTimer(judge);
 
         if (judge) {
             ImageButton deck = view.findViewById(R.id.pileDeck);
@@ -234,13 +261,15 @@ public class GameBoardFragment extends Fragment {
                     int finalI = i;
                     player1ImageButton.setOnClickListener(v1 -> {
                         // TODO Implement drag and drop here instead of the simple moveCard call
-                        moveCard(this.playerPile.id, PILES.PANEL_2.id, finalI, 0);
+                        moveCard(this.playerPile.id, PILES.PANEL_2.id, finalI, 0); // statt final random
                         for (int i1 = 0; i1 < 8; i1++) {
                             ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
                             player1ImageButtonId1.setEnabled(false);
                             player1ImageButtonId1.setOnClickListener(null);
                         }
                         socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                        countDownTimer.cancel();
+                        timerText.setVisibility(View.INVISIBLE);
                     });
                 }
                 for (int i = 0; i < 8; i++) {
@@ -262,6 +291,8 @@ public class GameBoardFragment extends Fragment {
                         player1ImageButtonId1.setOnClickListener(null);
                     }
                     socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                    countDownTimer.cancel();
+                    timerText.setVisibility(View.INVISIBLE);
                 });
             }
             for (int i = 0; i < 8; i++) {
@@ -270,6 +301,82 @@ public class GameBoardFragment extends Fragment {
             }
         }
     }
+
+    private void startTimer(boolean judge) {
+
+        Log.d("Debug", "Timer started");
+        // wenn Timer gestartet wird --> anzeigen
+        timerText.setVisibility(View.VISIBLE);
+
+        endTime = System.currentTimeMillis() + startTimeMillis;
+
+        // Countdown Intervall 1000 --> alle Sekunden
+        countDownTimer = new CountDownTimer(startTimeMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.d("Debug", "On Tick");
+                timeLeftInMillis = millisUntilFinished;
+
+                int minutes = (int) ((timeLeftInMillis / 1000) % 3600) / 60;
+                int seconds = (int) (timeLeftInMillis / 1000) % 60;
+
+                String timeLeftFormatted = String.format(Locale.getDefault(),
+                        "%02d:%02d", minutes, seconds);
+
+                timerText.setText(timeLeftFormatted);
+            }
+            @Override
+            public void onFinish() {
+                timerRunning = false;
+
+                // check if judge --> wenn ja karte von deck und auf panel
+                // Random Karte ausführen (Random Zahl 0-6)
+                // Zug beenden
+
+                // Random Zahl für Random Karte
+                int random = (int) (Math.random() * 7);
+
+                // check if judge
+                if (judge) {
+
+                    ImageButton deck = requireView().findViewById(R.id.pileDeck);
+                    moveCard(PILES.DECK.id, PILES.PANEL_1.id, 0, 0);
+                    deck.setEnabled(false);
+                    deck.setOnClickListener(null);
+
+                    // nach Ablauf des Timers wird zufällige Karte gelegt
+                    moveCard(playerPile.id, PILES.PANEL_2.id, random, 0); // statt final random, random card aus deck
+
+                } else {
+                    // nach Ablauf des Timers wird zufällige Karte gelegt
+                    moveCard(playerPile.id, PILES.SUBMISSION.id, random, 0);
+                }
+
+                for (int i1 = 0; i1 < 8; i1++) {
+                    ImageButton player1ImageButtonId1 = requireView().findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
+                    player1ImageButtonId1.setEnabled(false);
+                    player1ImageButtonId1.setOnClickListener(null);
+                }
+
+                socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+
+                // wenn Player fertig wird Timer anzeige unsichtbar
+                timerText.setVisibility(View.INVISIBLE);
+            }
+        }.start();
+        timerRunning = true;
+    }
+
+    private void setTime(long millisInput) {
+        startTimeMillis = millisInput * 1000;
+        // resetTimer();
+    }
+
+    /*
+    private void resetTimer() {
+        timeLeftInMillis = startTimeMillis;
+    }
+    */
 
     private void setImageButtonCard(View view, PILES pile, @NonNull String cardId, int index) {
         // If the pile is a player pile, check if it belongs to the player, otherwise do nothing
