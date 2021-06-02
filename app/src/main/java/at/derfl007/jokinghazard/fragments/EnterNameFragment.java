@@ -28,6 +28,7 @@ public class EnterNameFragment extends Fragment {
     private Socket socket;
 
     private static final String ARG_ACTION = "action";
+    public static String localPlayerName;
 
     private int action;
 
@@ -72,6 +73,7 @@ public class EnterNameFragment extends Fragment {
         joinGame.setOnClickListener(v -> {
 
             String playerName = textViewPlayerName.getText().toString();
+            localPlayerName = playerName;
             Log.d("DEBUG", socket.connected() ? "Connected" : "Not connected");
 
             // TODO Network stuff
