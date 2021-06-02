@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
+import at.derfl007.jokinghazard.drag_and_drop.MyTouchListener;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
@@ -223,8 +226,8 @@ public class GameBoardFragment extends Fragment {
 
         for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
             ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
-            Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag());
-            if (!(boolean) imageButton.getTag()) {
+            Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag(R.id.TAG_IMAGE_RESSOURCE));
+            if (!(boolean) imageButton.getTag(R.id.TAG_IMAGE_RESSOURCE)) {
                 moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
             }
 
@@ -250,28 +253,64 @@ public class GameBoardFragment extends Fragment {
         if (judge) {
             ImageButton deck = view.findViewById(R.id.pileDeck);
             deck.setEnabled(true);
+
+
             deck.setOnClickListener(v -> {
                 // TODO Implement drag and drop here instead of the simple moveCard call
                 moveCard(PILES.DECK.id, PILES.PANEL_1.id, 0, 0);
                 deck.setEnabled(false);
                 deck.setOnClickListener(null);
 
+
                 for (int i = 0; i < 8; i++) {
-                    ImageButton player1ImageButton = view.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
-                    int finalI = i;
-                    player1ImageButton.setOnClickListener(v1 -> {
-                        // TODO Implement drag and drop here instead of the simple moveCard call
-                        moveCard(this.playerPile.id, PILES.PANEL_2.id, finalI, 0); // statt final random
-                        for (int i1 = 0; i1 < 8; i1++) {
-                            ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
-                            player1ImageButtonId1.setEnabled(false);
-                            player1ImageButtonId1.setOnClickListener(null);
-                        }
-                        socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
-                        countDownTimer.cancel();
-                        timerText.setVisibility(View.INVISIBLE);
-                    });
+                    ImageButton player1ImageButtonId = view.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
+                    player1ImageButtonId.setTag(R.id.TAG_CARD_FINAL_I,i);
+                    player1ImageButtonId.setOnTouchListener(new MyTouchListener());
                 }
+
+                final ImageView image = view.findViewById(R.id.pilePanel1);
+                image.setOnDragListener((vi,event) -> {
+                    int action = event.getAction();
+                    switch (action) {
+                        case DragEvent.ACTION_DRAG_STARTED:
+                            Log.d("Drag", "Drag event started");
+                            break;
+                        case DragEvent.ACTION_DRAG_ENTERED:
+                            Log.d("Drag", "Drag event entered into "+vi.toString());
+                            break;
+                        case DragEvent.ACTION_DRAG_EXITED:
+                            Log.d("Drag", "Drag event exited from "+vi.toString());
+                            break;
+                        case DragEvent.ACTION_DROP:
+                            Log.d("Drag", "Dropped");
+                            int finalI = (int)((View) event.getLocalState()).getTag(R.id.TAG_CARD_FINAL_I);
+
+                            Log.d("cardID", "cId: " + finalI);
+                            moveCard(this.playerPile.id, PILES.PANEL_2.id, finalI, 0);
+                            for (int i1 = 0; i1 < 8; i1++) {
+                                ImageButton player1ImageButtonId1 = view.findViewById(GameBoardFragment.PILES.PLAYER_1.imageButtonIds[i1]);
+                                player1ImageButtonId1.setEnabled(false);
+                                player1ImageButtonId1.setOnTouchListener(null);
+                            }
+                            view.findViewById(R.id.pilePanel1).setOnDragListener(null);
+                            socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                            countDownTimer.cancel();
+                            timerText.setVisibility(View.INVISIBLE);
+                            break;
+                        case DragEvent.ACTION_DRAG_ENDED:
+                            Log.d("Drag", "Drag ended");
+                            if (!event.getResult()) {
+                                View view2 = (View) event.getLocalState();
+                                view2.setVisibility(View.VISIBLE);
+                            }
+                            //vi.setBackgroundDrawable(normalShape);
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                });
+
                 for (int i = 0; i < 8; i++) {
                     ImageButton player1ImageButtonId = view.findViewById(PILES.PLAYER_1.imageButtonIds[i]);
                     player1ImageButtonId.setEnabled(true);
@@ -281,20 +320,54 @@ public class GameBoardFragment extends Fragment {
         } else {
             for (int i = 0; i < 8; i++) {
                 ImageButton player1ImageButtonId = requireView().findViewById(PILES.PLAYER_1.imageButtonIds[i]);
-                int finalI = i;
-                player1ImageButtonId.setOnClickListener(v -> {
-                    // TODO Implement drag and drop here instead of the simple moveCard call
-                    moveCard(this.playerPile.id, PILES.SUBMISSION.id, finalI, 0);
-                    for (int i1 = 0; i1 < 8; i1++) {
-                        ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
-                        player1ImageButtonId1.setEnabled(false);
-                        player1ImageButtonId1.setOnClickListener(null);
-                    }
-                    socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
-                    countDownTimer.cancel();
-                    timerText.setVisibility(View.INVISIBLE);
-                });
+                player1ImageButtonId.setTag(R.id.TAG_CARD_FINAL_I,i);
+                player1ImageButtonId.setOnTouchListener(new MyTouchListener());
             }
+
+
+            final ImageView image = view.findViewById(R.id.pilePanel1);
+            image.setOnDragListener((v,event) -> {
+                int action = event.getAction();
+                switch (action) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        Log.d("Drag", "Drag event started");
+                        break;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        Log.d("Drag", "Drag event entered into "+v.toString());
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        Log.d("Drag", "Drag event exited from "+v.toString());
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        Log.d("Drag", "Dropped");
+                        int finalI = (int)((View) event.getLocalState()).getTag(R.id.TAG_CARD_FINAL_I);
+
+                        Log.d("cardID", "cId: " + finalI);
+                        moveCard(this.playerPile.id, GameBoardFragment.PILES.SUBMISSION.id, finalI, 0);
+                        for (int i1 = 0; i1 < 8; i1++) {
+                            ImageButton player1ImageButtonId1 = view.findViewById(GameBoardFragment.PILES.PLAYER_1.imageButtonIds[i1]);
+                            player1ImageButtonId1.setEnabled(false);
+                            player1ImageButtonId1.setOnTouchListener(null);
+                        }
+                        view.findViewById(R.id.pilePanel1).setOnDragListener(null);
+                        socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
+                        countDownTimer.cancel();
+                        timerText.setVisibility(View.INVISIBLE);
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        Log.d("Drag", "Drag ended");
+                        if (!event.getResult()) {
+                            View view2 = (View) event.getLocalState();
+                            view2.setVisibility(View.VISIBLE);
+                        }
+                        //v.setBackgroundDrawable(normalShape);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            });
+
             for (int i = 0; i < 8; i++) {
                 ImageButton player1ImageButtonId = requireView().findViewById(PILES.PLAYER_1.imageButtonIds[i]);
                 player1ImageButtonId.setEnabled(true);
@@ -384,13 +457,13 @@ public class GameBoardFragment extends Fragment {
             ImageButton imageButton = view.findViewById(pile.imageButtonIds[index]);
             if (cardId.equals("-1")) {
                 imageButton.setImageResource(R.drawable.transparent);
-                imageButton.setTag(false);
+                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,false);
             } else if (pile == PILES.SUBMISSION) {
                 imageButton.setImageResource(R.drawable.back);
-                imageButton.setTag(true);
+                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,true);
             } else {
                 imageButton.setImageResource(getCardImageById(view, cardId));
-                imageButton.setTag(true);
+                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,true);
             }
         }
     }
