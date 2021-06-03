@@ -121,6 +121,13 @@ public class GameBoardFragment extends Fragment {
 
         timerText = view.findViewById(R.id.timerTextView);
 
+        final TextView player1TextView = view.findViewById(R.id.playerName);
+        final TextView player2TextView = view.findViewById(R.id.avatarName1);
+        final TextView player3TextView = view.findViewById(R.id.avatarName2);
+        final TextView player4TextView = view.findViewById(R.id.avatarName3);
+
+        final TextView[] playerTextViews = {player1TextView, player2TextView, player3TextView, player4TextView};
+
         String[] playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
@@ -141,6 +148,9 @@ public class GameBoardFragment extends Fragment {
             player1ImageButtonId1.setOnClickListener(null);
         }
 
+        String localPlayerName = EnterNameFragment.localPlayerName;
+        playerTextViews[0].setText(localPlayerName);
+
         socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
             JSONObject jsonResponse = (JSONObject) response[0];
             try {
@@ -148,6 +158,7 @@ public class GameBoardFragment extends Fragment {
                 JSONArray players = jsonResponse.getJSONArray("users");
                 Log.d("DEBUG", "id of socket is " + socket.id());
 
+                int playerIndex = 1;
                 for (int i = 0; i < players.length(); i++) {
                     playerIds[i] = players.getJSONObject(i).getString("id");
                     Log.d("DEBUG", "id of i=" + i + " is " + playerIds[i]);
@@ -156,7 +167,21 @@ public class GameBoardFragment extends Fragment {
                         Log.d("DEBUG", String.valueOf(this.playerPile.id));
 
                     }
-                    // TODO Set user names
+
+                    if (!players.getJSONObject(i).getString("name").equals(localPlayerName)) {
+                        playerTextViews[playerIndex++].setText(players.getJSONObject(i).getString("name"));
+                    }
+                }
+
+                if (players.length() < 4) {
+                    TextView tva4 = view.findViewById(R.id.avatarName3);
+                    TextView tvap4 = view.findViewById(R.id.avatarPoints3);
+                    ImageView iva4 = view.findViewById(R.id.avatar3);
+                    ImageView ivac4 = view.findViewById(R.id.avatarCards3);
+                    tva4.setVisibility(View.INVISIBLE);
+                    tvap4.setVisibility(View.INVISIBLE);
+                    iva4.setVisibility(View.INVISIBLE);
+                    ivac4.setVisibility(View.INVISIBLE);
                 }
 
                 for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
