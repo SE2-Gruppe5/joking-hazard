@@ -43,13 +43,13 @@ Im Uhrzeigersinn fügt jeder Spieler ein Panel hinzu, sodass ein überlanger Com
 Der Rest der Spieler kann ein Panel ablehnen, wenn es keinen Sinn ergibt, per Mehrheitsentscheid. Wenn Sie keine Karte spielen können, die Sinn ergibt, tauschen Sie eine beliebige Karte aus 
 Ihrer Hand gegen zwei zusätzliche Karten und lassen Ihren Zug aus. Der erste Spieler, der keine Karten mehr hat, gewinnt.
 
-##Drag n' Drop
+## Drag n' Drop
 Um am Spielbrett Karten auszuspielen und zu interagieren, zieht man einfach die Karten per Drag and Drop Funktion auf die vorgesehene Stelle.
 
-##Punktesystem 
+## Punktesystem 
 Der Richter der Spielrunde vergibt die Punkte den (mindestens zwei anderen) Spielern. Die Spieler können ihre Punkte am Screen in der Ecke einsehen.
 
-##Zeitlimit pro Spielzug
+## Zeitlimit pro Spielzug
 Es gibt ein Zeitlimit, dass den Spielzug eines Mitspielers begrenzt. Ist diese Zeit abgelaufen, bricht der Spielzug des Spielers ab und der nächste ist an der Reihe. 
 Dies kann beliebig eingestellt werden (Am Anfang des Spiels)
 
