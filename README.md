@@ -21,9 +21,39 @@ Nach dieser Runde ist der zweite Spieler der Richter usw..
 Am Anfang jeder Runde nimmt jeder Spieler eine neue Karte.  
 Wer zuerst die maximale Punkteanzahl erreicht hat gewinnt.
 
-## Unsere zusätzlichen Funktionen
+## Grundlegende Features des Spiels 
 
-### Schummelfunktion
+### Startmenü 
+Mit dem Starten der App wird man von dem Home Screen mit zwei Buttons begrüßt. 
+"Join Game" oder "Create Game". Will man ein neues Spiel starten, klickt man auf den Button "Create Game". 
+Damit starten man einen neuen Room, bei dem dann mittels Zugangscode Freude beitreten können. 
+Dies ermöglicht der "Join Game" Button mit einem Eingabefeld für den Zugangscode.
+
+### Spielmodi 
+Es stehen dem Spieler zwei Spielmodi zur Verfügung
+
+Marathon
+Anstatt mit 3 Punkten das Spiel zu gewinnen, spielen Sie weiter, bis der Stapel aufgebraucht ist. 
+Wer zu diesem Zeitpunkt die meisten Punkte hat, gewinnt. Bei Gleichstand wird der Spieler mit der 
+niedrigsten Punktzahl zum Richter und spielt zwei Tafeln, und jeder, der Gleichstand hat, spielt die Punchline.
+
+Neverending Story
+Entfernen Sie alle roten Karten vom Stapel. Jeder nimmt 10 Karten. 
+Im Uhrzeigersinn fügt jeder Spieler ein Panel hinzu, sodass ein überlanger Comic entsteht. 
+Der Rest der Spieler kann ein Panel ablehnen, wenn es keinen Sinn ergibt, per Mehrheitsentscheid. Wenn Sie keine Karte spielen können, die Sinn ergibt, tauschen Sie eine beliebige Karte aus 
+Ihrer Hand gegen zwei zusätzliche Karten und lassen Ihren Zug aus. Der erste Spieler, der keine Karten mehr hat, gewinnt.
+
+##Drag n' Drop
+Um am Spielbrett Karten auszuspielen und zu interagieren, zieht man einfach die Karten per Drag and Drop Funktion auf die vorgesehene Stelle.
+
+##Punktesystem 
+Der Richter der Spielrunde vergibt die Punkte den (mindestens zwei anderen) Spielern. Die Spieler können ihre Punkte am Screen in der Ecke einsehen.
+
+##Zeitlimit pro Spielzug
+Es gibt ein Zeitlimit, dass den Spielzug eines Mitspielers begrenzt. Ist diese Zeit abgelaufen, bricht der Spielzug des Spielers ab und der nächste ist an der Reihe. 
+Dies kann beliebig eingestellt werden (Am Anfang des Spiels)
+
+### Schummelfunktion (Zusatzfunktion)
 Durch Schütteln des Gerätes kann der Spieler eine zweite Karte ziehen. 
 Das heißt der Schummler hat nicht nur sieben Karten sondern acht Karten zum Auswählen.
 Die Handkarten jedes Spielers werden so angezeigt, dass man diese Karten jederzeit abzählen kann.
