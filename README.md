@@ -30,18 +30,20 @@ Damit starten man einen neuen Room, bei dem dann mittels Zugangscode Freude beit
 Dies ermöglicht der "Join Game" Button mit einem Eingabefeld für den Zugangscode.
 
 ### Spielmodi 
-Es stehen dem Spieler zwei Spielmodi zur Verfügung
+Es stehen dem Spieler Spielmodi zur Verfügung. 
 
-Marathon
-Anstatt mit 3 Punkten das Spiel zu gewinnen, spielen Sie weiter, bis der Stapel aufgebraucht ist. 
-Wer zu diesem Zeitpunkt die meisten Punkte hat, gewinnt. Bei Gleichstand wird der Spieler mit der 
-niedrigsten Punktzahl zum Richter und spielt zwei Tafeln, und jeder, der Gleichstand hat, spielt die Punchline.
+Mit den Feldern "Point Limit" und "Time Limit per Turn" kann sich der Spieler eigenene Spielmodi konfigurieren. 
+Point Limit: 
+Wie lange will man das Spiel spielen? 
+Der Spieler entscheidet, bei welchem Punktestand gewonnen wird. 
 
-Neverending Story
-Entfernen Sie alle roten Karten vom Stapel. Jeder nimmt 10 Karten. 
-Im Uhrzeigersinn fügt jeder Spieler ein Panel hinzu, sodass ein überlanger Comic entsteht. 
-Der Rest der Spieler kann ein Panel ablehnen, wenn es keinen Sinn ergibt, per Mehrheitsentscheid. Wenn Sie keine Karte spielen können, die Sinn ergibt, tauschen Sie eine beliebige Karte aus 
-Ihrer Hand gegen zwei zusätzliche Karten und lassen Ihren Zug aus. Der erste Spieler, der keine Karten mehr hat, gewinnt.
+Time Limit per Turn: 
+Mittels Keyboard wird eine Zahl in das Feld eingegeben. So lange darf ein Zug pro Spieler dann dauern. 
+Es sollte eine möglichst sinnvolle Zahl eingegeben werden. 
+Ist diese Zeit abgelaufen, geht es automatisch zum nächsten Spieler. 
+
+Auf diese Weise kann sich der Spieler seine eigenen Szenarien bauen. 
+
 
 ## Drag n' Drop
 Um am Spielbrett Karten auszuspielen und zu interagieren, zieht man einfach die Karten per Drag and Drop Funktion auf die vorgesehene Stelle.
