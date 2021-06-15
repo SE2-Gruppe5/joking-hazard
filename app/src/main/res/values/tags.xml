@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="TAG_CARD_FINAL_I" type="id"/>
-    <item name="TAG_IMAGE_RESSOURCE" type="id" />
+    <item name="TAG_IMAGE_RESOURCE" type="id" />
+    <item name="TAG_USER" type="id"/>
+    <item name="TAG_CARDS_AMOUNT" type="id"/>
 </resources>

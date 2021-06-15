@@ -53,36 +53,6 @@ public class VotingUIFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        Intent intent = this.getActivity().getIntent();
-        try {
-           // loadImageView(R.id.ComicStoryImg_Deck, intent.getExtras().getInt("Panel_1"));
-        /*loadImageView(R.id.ComicStoryImg_Judge, intent.getExtras().getInt("Panel_2"));
-        loadImageButton(R.id.cardOfPlayer1, intent.getExtras().getInt("Submission_FirstPlayer"));
-        loadImageButton(R.id.cardOfPlayer2, intent.getExtras().getInt("Submission_SecondPlayer"));
-        loadImageButton(R.id.cardOfPlayer3, intent.getExtras().getInt("Submission_ThirdPlayer"));*/
-        }catch (NullPointerException nullPointerException){
-            Log.d(logTag,nullPointerException.getMessage());
-        }
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-
-        Intent intent = this.getActivity().getIntent();
-        try {
-            loadImageView(R.id.ComicStoryImg_Deck, intent.getExtras().getInt("Panel_1"));
-        /*loadImageView(R.id.ComicStoryImg_Judge, intent.getExtras().getInt("Panel_2"));
-        loadImageButton(R.id.cardOfPlayer1, intent.getExtras().getInt("Submission_FirstPlayer"));
-        loadImageButton(R.id.cardOfPlayer2, intent.getExtras().getInt("Submission_SecondPlayer"));
-        loadImageButton(R.id.cardOfPlayer3, intent.getExtras().getInt("Submission_ThirdPlayer"));*/
-        }catch (NullPointerException nullPointerException){
-            Log.d(logTag,nullPointerException.getMessage());
-    }
-    }
-
     public void loadImageView(int ImageViewId,int idImgSrc){
         ImageView i = getView().findViewById(ImageViewId);
         i.setImageResource((idImgSrc));
@@ -116,17 +86,6 @@ public class VotingUIFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_voting_ui, container, false);
     }
 
-    private void setStoryImgs(){
-     /*   for(int iterator = 0; iterator < storyLeanght; iterator++){
-            ImageView card = (ImageView)  getView().findViewById(playedCards.get(iterator));
-        }*/
-    }
-
-    private void addingPictureToStory(int id){
-        ImageView card = (ImageView) getView().findViewById(R.id.ComicStoryImg_Winner);
-        card.setImageResource(id);
-    }
-
     private void enableConfirmationButton(){
         Button confirmBtn = getView().findViewById(R.id.confirmStory);
         confirmBtn.setEnabled(true);
@@ -134,9 +93,4 @@ public class VotingUIFragment extends Fragment {
                 // ToDo send an Event and get the User who ownes the Card
         });
     }
-
-    public void setImages(){
-
-    }
-
 }
