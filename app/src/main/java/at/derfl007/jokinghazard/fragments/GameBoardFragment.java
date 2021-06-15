@@ -7,13 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.JsonToken;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,11 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
@@ -40,6 +38,7 @@ import io.socket.client.Socket;
 public class GameBoardFragment extends Fragment {
 
     private static final int HAS_CARD = 0;
+    private static final int pointsPerWinningCard = 1;
     private Socket socket;
 
 
@@ -49,14 +48,19 @@ public class GameBoardFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private TextView timerText;
     private boolean timerRunning;
-
+    private String[] playerIds;
+    private Fragment childFragment;
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
-        PLAYER_1(1, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_2(2, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_3(3, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_4(4, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_1(1,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_2(2,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_3(3,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_4(4,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
         PANEL_1(5, new int[]{R.id.pilePanel1}),
         PANEL_2(6, new int[]{R.id.pilePanel2}),
         PANEL_3(7, new int[]{R.id.pilePanel3}),
@@ -128,7 +132,7 @@ public class GameBoardFragment extends Fragment {
 
         final TextView[] playerTextViews = {player1TextView, player2TextView, player3TextView, player4TextView};
 
-        String[] playerIds = new String[4];
+        playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
 
@@ -146,6 +150,7 @@ public class GameBoardFragment extends Fragment {
             ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
             player1ImageButtonId1.setEnabled(false);
             player1ImageButtonId1.setOnClickListener(null);
+  //          player1ImageButtonId1.setTag(1, "Player"+(i1+1));
         }
 
         String localPlayerName = EnterNameFragment.localPlayerName;
@@ -165,7 +170,6 @@ public class GameBoardFragment extends Fragment {
                     if (playerIds[i].equals(socket.id())) {
                         this.playerPile = PILES.getPileById(i + 1);
                         Log.d("DEBUG", String.valueOf(this.playerPile.id));
-
                     }
 
                     if (!players.getJSONObject(i).getString("name").equals(localPlayerName)) {
@@ -212,15 +216,64 @@ public class GameBoardFragment extends Fragment {
 
         socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(() -> {
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
-            votingUi.setVisibility(View.VISIBLE);
-            // TODO Load cards into imageviews add points to winning player and tell the others who won the round (requires server changes)
-//            socket.emit("user:points:add", <id>, <points>, (Ack) args -> {});
-            votingUi.setVisibility(View.GONE);
-            for (int i = 0; i < playerIds.length - 1; i++) {
-                moveCard(PILES.SUBMISSION.id, PILES.DISCARD.id, i, 0);
+
+            ImageView panelDeck   = view.findViewById(R.id.ComicStoryImg_Deck);
+            ImageView panelJudge  = view.findViewById(R.id.ComicStoryImg_Judge);
+            ImageView panleWinner = view.findViewById(R.id.ComicStoryImg_Winner);
+
+            panelDeck.setImageResource(getCardImageById(view, (String) view.findViewById(PILES.PANEL_1.imageButtonIds[0]).getTag(R.id.TAG_IMAGE_RESOURCE)));
+            panelJudge.setImageResource(getCardImageById(view, (String) view.findViewById(PILES.PANEL_2.imageButtonIds[0]).getTag(R.id.TAG_IMAGE_RESOURCE)));
+
+            ImageButton[] imageButtons = { view.findViewById(R.id.cardOfPlayer1), view.findViewById(R.id.cardOfPlayer2), view.findViewById(R.id.cardOfPlayer3)};
+            ImageButton submissionImageButton = view.findViewById(PILES.SUBMISSION.imageButtonIds[0]);
+            String[] userIds = ((String[]) submissionImageButton.getTag(R.id.TAG_USER));
+            String[] imageIds = ((String[]) submissionImageButton.getTag(R.id.TAG_IMAGE_RESOURCE));
+            Button confirm = view.findViewById(R.id.confirmStory);
+
+            int cardsAmount = (int) submissionImageButton.getTag(R.id.TAG_CARDS_AMOUNT);
+            for (int i = 0; i < cardsAmount; i++) {
+                imageButtons[i].setImageResource(getCardImageById(view, imageIds[i]));
+                imageButtons[i].setTag(R.id.TAG_USER, userIds[i]);
+                Log.d("GameBoard", (String) imageButtons[i].getTag(R.id.TAG_USER));
+                imageButtons[i].setTag(R.id.TAG_IMAGE_RESOURCE, imageIds[i]);
+                imageButtons[i].setVisibility(View.VISIBLE);
+                imageButtons[i].setOnClickListener(v -> {
+                    panleWinner.setImageResource(getCardImageById(view, (String) v.getTag(R.id.TAG_IMAGE_RESOURCE)));
+                    panleWinner.setTag(R.id.TAG_USER, v.getTag(R.id.TAG_USER));
+                    panleWinner.setTag(R.id.TAG_IMAGE_RESOURCE,v.getTag(R.id.TAG_IMAGE_RESOURCE));
+                    Log.d("GameBoard", (String) panleWinner.getTag(R.id.TAG_USER));
+
+                    confirm.setEnabled(true);
+                });
+
+            confirm.setOnClickListener(v -> {
+                if(panleWinner.getTag(R.id.TAG_USER) != null){
+                    Log.d("Probe2", (String) panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE));
+                    socket.emit("room:storyConfirmed", panleWinner.getTag(R.id.TAG_USER), panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE), (Ack) args1 -> {});
+                    socket.emit("user:points:add", panleWinner.getTag(R.id.TAG_USER), pointsPerWinningCard , (Ack) args1 -> {});
+
+                    votingUi.setVisibility(View.GONE);
+                }
+            });
             }
-            moveCard(PILES.PANEL_1.id, PILES.DISCARD.id, 0, 0);
-            moveCard(PILES.PANEL_2.id, PILES.DISCARD.id, 0, 0);
+
+
+            votingUi.setVisibility(View.VISIBLE);
+        }));
+
+        socket.on("room:winner", args -> requireActivity().runOnUiThread(()->{
+            try {
+                String playerName = ((JSONObject) args[0]).getString("player");
+                Log.d("Probe", playerName);
+                String cardId = ((JSONObject) args[0]).getString("cardId");
+                Log.d("Probe", cardId);
+                ImageButton winner = view.findViewById(PILES.PANEL_3.imageButtonIds[0]);
+                winner.setImageResource(getCardImageById(view, cardId));
+                Snackbar.make(view, playerName+" won this round!", Snackbar.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }));
     }
 
@@ -233,8 +286,11 @@ public class GameBoardFragment extends Fragment {
             int sourceIndex = jsonResponse.getInt("sourceIndex");
             int targetIndex = jsonResponse.getInt("targetIndex");
             String cardId = jsonResponse.getString("cardId");
-            setImageButtonCard(view, sourcePile, "-1", sourceIndex);
-            setImageButtonCard(view, targetPile, cardId, targetIndex);
+            String socketId = jsonResponse.getString("socketId");
+
+            setImageButtonCard(view, sourcePile, "-1", sourceIndex, "-1");
+            setImageButtonCard(view, targetPile, cardId, targetIndex, socketId);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -251,8 +307,8 @@ public class GameBoardFragment extends Fragment {
 
         for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
             ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
-            Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag(R.id.TAG_IMAGE_RESSOURCE));
-            if (!(boolean) imageButton.getTag(R.id.TAG_IMAGE_RESSOURCE)) {
+            Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag(R.id.TAG_IMAGE_RESOURCE));
+            if (imageButton.getTag(R.id.TAG_IMAGE_RESOURCE) == "-1") {
                 moveCard(PILES.DECK.id, this.playerPile.id, 0, i);
             }
 
@@ -276,6 +332,13 @@ public class GameBoardFragment extends Fragment {
         startTimer(judge);
 
         if (judge) {
+            for (int i = 0; i < playerIds.length - 1; i++) {
+                moveCard(PILES.SUBMISSION.id, PILES.DISCARD.id, i, 0);
+            }
+            moveCard(PILES.PANEL_1.id, PILES.DISCARD.id, 0, 0);
+            moveCard(PILES.PANEL_2.id, PILES.DISCARD.id, 0, 0);
+            moveCard(PILES.PANEL_3.id, PILES.DISCARD.id, 0, 0);
+
             ImageButton deck = view.findViewById(R.id.pileDeck);
             deck.setEnabled(true);
 
@@ -476,19 +539,57 @@ public class GameBoardFragment extends Fragment {
     }
     */
 
-    private void setImageButtonCard(View view, PILES pile, @NonNull String cardId, int index) {
+    private void setImageButtonCard(View view, PILES pile, @NonNull String cardId, int index, String socketId) {
         // If the pile is a player pile, check if it belongs to the player, otherwise do nothing
         if (pile != PILES.DECK && (pile.id < PILES.PLAYER_1.id || pile.id > PILES.PLAYER_4.id || pile.id == this.playerPile.id)) {
             ImageButton imageButton = view.findViewById(pile.imageButtonIds[index]);
-            if (cardId.equals("-1")) {
+            if (pile == PILES.SUBMISSION) {
+                if (cardId.equals("-1")) {
+                    imageButton.setImageResource(R.drawable.transparent);
+                    imageButton.setTag(R.id.TAG_CARDS_AMOUNT, 0);
+                    imageButton.setTag(R.id.TAG_IMAGE_RESOURCE, new String[3]);
+                    imageButton.setTag(R.id.TAG_USER, new String[3]);
+                } else {
+                    imageButton.setImageResource(R.drawable.back);
+                    String[] cardIds;
+                    String[] userIds;
+                    int cardsAmount;
+
+                    if (imageButton.getTag(R.id.TAG_IMAGE_RESOURCE) == null) {
+                        cardIds = new String[3];
+                    } else {
+                        cardIds = (String[]) imageButton.getTag(R.id.TAG_IMAGE_RESOURCE);
+                    }
+
+                    if (imageButton.getTag(R.id.TAG_USER) == null) {
+                        userIds = new String[3];
+                    } else {
+                        userIds = (String[]) imageButton.getTag(R.id.TAG_USER);
+                    }
+
+                    if (imageButton.getTag(R.id.TAG_CARDS_AMOUNT) == null) {
+                        cardsAmount = 0;
+                    } else {
+                        cardsAmount = (int) imageButton.getTag(R.id.TAG_CARDS_AMOUNT);
+                    }
+
+                    cardIds[cardsAmount] = cardId;
+                    userIds[cardsAmount] = socketId;
+                    imageButton.setTag(R.id.TAG_CARDS_AMOUNT, cardsAmount + 1);
+                    imageButton.setTag(R.id.TAG_IMAGE_RESOURCE, cardIds);
+                    imageButton.setTag(R.id.TAG_USER, userIds);
+                    Log.d("Test", Arrays.toString(((String[]) imageButton.getTag(R.id.TAG_USER))));
+                }
+            } else if (cardId.equals("-1")) {
                 imageButton.setImageResource(R.drawable.transparent);
-                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,false);
-            } else if (pile == PILES.SUBMISSION) {
-                imageButton.setImageResource(R.drawable.back);
-                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,true);
+                imageButton.setTag(R.id.TAG_IMAGE_RESOURCE, "-1");
+                imageButton.setTag(R.id.TAG_USER, socketId);
+                Log.d("GameBoard", (String) imageButton.getTag(R.id.TAG_USER));
             } else {
                 imageButton.setImageResource(getCardImageById(view, cardId));
-                imageButton.setTag(R.id.TAG_IMAGE_RESSOURCE,true);
+                imageButton.setTag(R.id.TAG_IMAGE_RESOURCE, cardId);
+                imageButton.setTag(R.id.TAG_USER, socketId);
+                Log.d("GameBoard", (String) imageButton.getTag(R.id.TAG_USER));
             }
         }
     }
@@ -497,4 +598,5 @@ public class GameBoardFragment extends Fragment {
         Resources resources = view.getContext().getResources();
         return resources.getIdentifier("card_" + cardId, "drawable", view.getContext().getPackageName());
     }
+
 }

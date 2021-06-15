@@ -1,12 +1,16 @@
 package at.derfl007.jokinghazard.fragments;
 
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +29,11 @@ import at.derfl007.jokinghazard.R;
 public class VotingUIFragment extends Fragment {
 
     public final static String playedCardsParam = "playedCardsThisRound";
+    public final static String logTag = "VotingUIFragment";
     private int storyLeanght = 2;   //paramter to determine the leanght of the Story
-    private ArrayList<Integer> playedCards;
-    private ArrayList<ImageButton> possibleCards;
+
+    private ArrayList<ImageButton> selecteableCards;
+    private ArrayList<ImageView> cardsOfTheStory;
 
     private Socket socket;
 
@@ -47,14 +53,28 @@ public class VotingUIFragment extends Fragment {
         return fragment;
     }
 
+    public void loadImageView(int ImageViewId,int idImgSrc){
+        ImageView i = getView().findViewById(ImageViewId);
+        i.setImageResource((idImgSrc));
+        cardsOfTheStory.add(i);
+    }
+
+    public void loadImageButton(int ImageViewId,int idImgSrc){
+        if(idImgSrc != 0){
+            ImageButton i = getView().findViewById(ImageViewId);
+            i.setImageResource((idImgSrc));
+            i.setOnClickListener(x -> {
+                ImageView winnerPicture = getView().findViewById(R.id.ComicStoryImg_Winner);
+                winnerPicture.setImageResource(idImgSrc);
+            });
+            i.setVisibility(View.VISIBLE);
+            selecteableCards.add(i);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            playedCards = getArguments().getIntegerArrayList(playedCardsParam);
-            setStoryImgs();
-            createImageButtons();
-        }
     }
 
     @Override
@@ -64,36 +84,6 @@ public class VotingUIFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_voting_ui, container, false);
-    }
-
-    private void setStoryImgs(){
-        for(int iterator = 0; iterator < storyLeanght; iterator++){
-            ImageView card = (ImageView)  getView().findViewById(playedCards.get(iterator));
-        }
-    }
-
-    private void createImageButtons(){
-        for(int iterator = storyLeanght; iterator < playedCards.size(); iterator++){
-            possibleCards.add(createImageButton(playedCards.get(iterator)));
-        }
-    }
-
-    private ImageButton createImageButton(int id){
-        LinearLayout layout = (LinearLayout) getView().findViewById(R.id.layoutImgButtons);
-        ImageButton imgButton = new ImageButton(getContext());
-        imgButton.setScaleType(ImageButton.ScaleType.FIT_CENTER);
-        imgButton.setImageResource(id);
-        layout.addView(imgButton);
-        imgButton.setOnClickListener(x -> {
-                addingPictureToStory(id);
-                enableConfirmationButton();
-        });
-        return imgButton;
-    }
-
-    private void addingPictureToStory(int id){
-        ImageView card = (ImageView) getView().findViewById(R.id.ComicStoryImg_Winner);
-        card.setImageResource(id);
     }
 
     private void enableConfirmationButton(){
