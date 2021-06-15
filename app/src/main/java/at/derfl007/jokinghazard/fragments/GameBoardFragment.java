@@ -239,13 +239,18 @@ public class GameBoardFragment extends Fragment {
                 imageButtons[i].setOnClickListener(v -> {
                     panleWinner.setImageResource(getCardImageById(view, (String) v.getTag(R.id.TAG_IMAGE_RESOURCE)));
                     panleWinner.setTag(R.id.TAG_USER, v.getTag(R.id.TAG_USER));
+                    panleWinner.setTag(R.id.TAG_IMAGE_RESOURCE,v.getTag(R.id.TAG_IMAGE_RESOURCE));
                     Log.d("GameBoard", (String) panleWinner.getTag(R.id.TAG_USER));
+
                     confirm.setEnabled(true);
                 });
 
             confirm.setOnClickListener(v -> {
                 if(panleWinner.getTag(R.id.TAG_USER) != null){
-                    socket.emit("room:storyConfirmed", panleWinner.getTag(R.id.TAG_USER), (Ack) args1 -> {});
+                    Log.d("Probe2", (String) panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE));
+                    socket.emit("room:storyConfirmed", panleWinner.getTag(R.id.TAG_USER), panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE), (Ack) args1 -> {});
+                    socket.emit("user:points:add", panleWinner.getTag(R.id.TAG_USER), 1, (Ack) args1 -> {});
+
                     votingUi.setVisibility(View.GONE);
                 }
             });
@@ -256,7 +261,18 @@ public class GameBoardFragment extends Fragment {
         }));
 
         socket.on("room:winner", args -> requireActivity().runOnUiThread(()->{
-            Log.d("Wichtig", "Bin da");
+            try {
+                String playerName = ((JSONObject) args[0]).getString("player");
+                Log.d("Probe", playerName);
+                String cardId = ((JSONObject) args[0]).getString("cardId");
+                Log.d("Probe", cardId);
+                ImageButton winner = view.findViewById(PILES.PANEL_3.imageButtonIds[0]);
+                winner.setImageResource(getCardImageById(view, cardId));
+                Snackbar.make(view, playerName+" won this round!", Snackbar.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }));
     }
 
@@ -320,6 +336,7 @@ public class GameBoardFragment extends Fragment {
             }
             moveCard(PILES.PANEL_1.id, PILES.DISCARD.id, 0, 0);
             moveCard(PILES.PANEL_2.id, PILES.DISCARD.id, 0, 0);
+            moveCard(PILES.PANEL_3.id, PILES.DISCARD.id, 0, 0);
 
             ImageButton deck = view.findViewById(R.id.pileDeck);
             deck.setEnabled(true);
