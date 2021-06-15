@@ -3,7 +3,11 @@ package at.derfl007.jokinghazard.fragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -25,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
@@ -49,14 +54,19 @@ public class GameBoardFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private TextView timerText;
     private boolean timerRunning;
-
+    private String[] playerIds;
+    private Fragment childFragment;
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
-        PLAYER_1(1, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_2(2, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_3(3, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
-        PLAYER_4(4, new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_1(1,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_2(2,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_3(3,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
+        PLAYER_4(4,
+                new int[]{R.id.pilePlayer1, R.id.pilePlayer2, R.id.pilePlayer3, R.id.pilePlayer4, R.id.pilePlayer5, R.id.pilePlayer6, R.id.pilePlayer7, R.id.pilePlayer8}),
         PANEL_1(5, new int[]{R.id.pilePanel1}),
         PANEL_2(6, new int[]{R.id.pilePanel2}),
         PANEL_3(7, new int[]{R.id.pilePanel3}),
@@ -128,7 +138,7 @@ public class GameBoardFragment extends Fragment {
 
         final TextView[] playerTextViews = {player1TextView, player2TextView, player3TextView, player4TextView};
 
-        String[] playerIds = new String[4];
+        playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
 
@@ -146,6 +156,7 @@ public class GameBoardFragment extends Fragment {
             ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
             player1ImageButtonId1.setEnabled(false);
             player1ImageButtonId1.setOnClickListener(null);
+  //          player1ImageButtonId1.setTag(1, "Player"+(i1+1));
         }
 
         String localPlayerName = EnterNameFragment.localPlayerName;
@@ -165,7 +176,6 @@ public class GameBoardFragment extends Fragment {
                     if (playerIds[i].equals(socket.id())) {
                         this.playerPile = PILES.getPileById(i + 1);
                         Log.d("DEBUG", String.valueOf(this.playerPile.id));
-
                     }
 
                     if (!players.getJSONObject(i).getString("name").equals(localPlayerName)) {
@@ -211,11 +221,28 @@ public class GameBoardFragment extends Fragment {
         socket.on("card:moved", (response) -> requireActivity().runOnUiThread(() -> cardMoved(view, response)));
 
         socket.on("room:all_cards_played", args -> requireActivity().runOnUiThread(() -> {
+          /*  ArrayList<Integer> array = new ArrayList<>();
+            array.add(0, PILES.PANEL_1.id);
+            array.add(1, PILES.PANEL_2.id);
+            for (int i = 0; i < playerIds.length - 1; i++) {
+                array.add (i+2, PILES.SUBMISSION.id);
+            }*/
+
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
+            
             votingUi.setVisibility(View.VISIBLE);
+
             // TODO Load cards into imageviews add points to winning player and tell the others who won the round (requires server changes)
-//            socket.emit("user:points:add", <id>, <points>, (Ack) args -> {});
-            votingUi.setVisibility(View.GONE);
+            socket.emit("user:points:add", 0, 1, (Ack) args1 -> requireActivity().runOnUiThread(() -> {
+                JSONObject response1 = (JSONObject) args1[0];
+            }));
+            socket.emit("user:points:get",0,(Ack) args1 -> requireActivity().runOnUiThread(() -> {
+                JSONObject response1 = (JSONObject) args1[0];
+                Snackbar.make(view, "Deine Punkte", Snackbar.LENGTH_SHORT).show();
+            }));
+
+           // socket.emit("room:judgeVoted");
+           // votingUi.setVisibility(View.GONE);
             for (int i = 0; i < playerIds.length - 1; i++) {
                 moveCard(PILES.SUBMISSION.id, PILES.DISCARD.id, i, 0);
             }
@@ -223,6 +250,7 @@ public class GameBoardFragment extends Fragment {
             moveCard(PILES.PANEL_2.id, PILES.DISCARD.id, 0, 0);
         }));
     }
+
 
     private void cardMoved(View view, Object[] response) {
         JSONObject jsonResponse = (JSONObject) response[0];

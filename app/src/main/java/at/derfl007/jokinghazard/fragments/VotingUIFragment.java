@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,11 @@ public class VotingUIFragment extends Fragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -67,9 +73,9 @@ public class VotingUIFragment extends Fragment {
     }
 
     private void setStoryImgs(){
-        for(int iterator = 0; iterator < storyLeanght; iterator++){
+     /*   for(int iterator = 0; iterator < storyLeanght; iterator++){
             ImageView card = (ImageView)  getView().findViewById(playedCards.get(iterator));
-        }
+        }*/
     }
 
     private void createImageButtons(){
@@ -103,4 +109,9 @@ public class VotingUIFragment extends Fragment {
                 // ToDo send an Event and get the User who ownes the Card
         });
     }
+
+    public void setImages(){
+
+    }
+
 }
