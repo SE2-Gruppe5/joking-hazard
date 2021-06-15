@@ -38,6 +38,7 @@ import io.socket.client.Socket;
 public class GameBoardFragment extends Fragment {
 
     private static final int HAS_CARD = 0;
+    private static final int pointsPerWinningCard = 1;
     private Socket socket;
 
 
@@ -249,7 +250,7 @@ public class GameBoardFragment extends Fragment {
                 if(panleWinner.getTag(R.id.TAG_USER) != null){
                     Log.d("Probe2", (String) panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE));
                     socket.emit("room:storyConfirmed", panleWinner.getTag(R.id.TAG_USER), panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE), (Ack) args1 -> {});
-                    socket.emit("user:points:add", panleWinner.getTag(R.id.TAG_USER), 1, (Ack) args1 -> {});
+                    socket.emit("user:points:add", panleWinner.getTag(R.id.TAG_USER), pointsPerWinningCard , (Ack) args1 -> {});
 
                     votingUi.setVisibility(View.GONE);
                 }

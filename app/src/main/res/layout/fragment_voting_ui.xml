@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <!-- ToDo Image Buttons werden zukünftig automatisch erstellt werden je nach Spielerzahl NUR zu Presentations zwecken noch vorhanden-->
+
             <ImageButton
                 android:id="@+id/cardOfPlayer1"
                 android:layout_width="wrap_content"
@@ -120,8 +120,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/green"
+            android:textColorHint="#FFFFFF"
             android:enabled="false"
             android:text="@string/confirm_button"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            app:backgroundTint="@null"
+            />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
