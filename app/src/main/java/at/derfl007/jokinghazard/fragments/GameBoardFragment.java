@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -227,9 +228,9 @@ public class GameBoardFragment extends Fragment {
             for (int i = 0; i < playerIds.length - 1; i++) {
                 array.add (i+2, PILES.SUBMISSION.id);
             }*/
-
+            passPlayedCards();
             LinearLayout votingUi = view.findViewById(R.id.votingUiOverlay);
-            
+
             votingUi.setVisibility(View.VISIBLE);
 
             // TODO Load cards into imageviews add points to winning player and tell the others who won the round (requires server changes)
@@ -524,5 +525,20 @@ public class GameBoardFragment extends Fragment {
     private int getCardImageById(View view, String cardId) {
         Resources resources = view.getContext().getResources();
         return resources.getIdentifier("card_" + cardId, "drawable", view.getContext().getPackageName());
+    }
+
+    private void passPlayedCards(){
+        Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
+        // todo
+        //int[] imageButtonIds = shuffleSubmission();
+        intent.putExtra("Panel_1", PILES.PANEL_1.imageButtonIds[0]);
+        intent.putExtra("Panel_2", PILES.PANEL_2.imageButtonIds[0]);
+        intent.putExtra("Submission_FirstPlayer", PILES.SUBMISSION.imageButtonIds[0]);
+        intent.putExtra("Submission_SecondPlayer", PILES.SUBMISSION.imageButtonIds[1]);
+        intent.putExtra("Submission_ThirdPlayer", PILES.SUBMISSION.imageButtonIds[2]);
+    }
+
+    private int[] shuffleSubmission(){
+        return null;
     }
 }
