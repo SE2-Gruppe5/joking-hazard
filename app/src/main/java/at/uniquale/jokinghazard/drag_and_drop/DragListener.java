@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.drag_and_drop;
+package at.uniquale.jokinghazard.drag_and_drop;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -49,15 +49,6 @@ public class DragListener implements View.OnDragListener {
                 v.setBackgroundColor(Color.TRANSPARENT);
                 v.invalidate();
 
-                //Frage: sollen wir etwas Ausgeben, wenn der Drop erfolreich war?
-
-                                /*if (event.getResult()) {
-                                    Toast.makeText(this, "Du hast eine Karte gespielt", Toast.LENGTH_LONG).show();
-
-                                } else {
-                                    Toast.makeText(this, "Es funktionierte nicht", Toast.LENGTH_LONG).show();
-                                } */
-
                 return true;
 
             case DragEvent.ACTION_DRAG_LOCATION:
@@ -67,4 +58,4 @@ public class DragListener implements View.OnDragListener {
 
         return false;
     }
-};
+}

@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.activities;
+package at.uniquale.jokinghazard.activities;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-import at.derfl007.jokinghazard.R;
+import at.uniquale.jokinghazard.R;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 

@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.fragments;
+package at.uniquale.jokinghazard.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -21,15 +21,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import at.derfl007.jokinghazard.R;
-import at.derfl007.jokinghazard.activities.MainActivity;
-import at.derfl007.jokinghazard.util.ErrorMessages;
+import at.uniquale.jokinghazard.R;
+import at.uniquale.jokinghazard.activities.MainActivity;
+import at.uniquale.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 public class WaitingRoomFragment extends Fragment {
 
@@ -76,7 +74,8 @@ public class WaitingRoomFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                socket.emit("room:leave", (Ack) response -> {});
+                socket.emit("room:leave", (Ack) response -> {
+                });
                 Navigation.findNavController(view).navigateUp();
             }
         };
@@ -185,5 +184,6 @@ public class WaitingRoomFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         socket.off("room:admin_started_game");
+        socket.off("msg:info");
     }
 }

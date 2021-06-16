@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.fragments;
+package at.uniquale.jokinghazard.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import at.derfl007.jokinghazard.R;
-import at.derfl007.jokinghazard.activities.MainActivity;
+import at.uniquale.jokinghazard.R;
+import at.uniquale.jokinghazard.activities.MainActivity;
 import io.socket.client.Socket;
 
 public class StartmenuFragment extends Fragment {

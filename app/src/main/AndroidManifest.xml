@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="at.derfl007.jokinghazard">
+    package="at.uniquale.jokinghazard">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JokingHazard">
-        <activity android:name=".activities.MainActivity" android:screenOrientation="landscape" android:immersive="true">
+        <activity android:name="at.uniquale.jokinghazard.activities.MainActivity" android:screenOrientation="landscape" android:immersive="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

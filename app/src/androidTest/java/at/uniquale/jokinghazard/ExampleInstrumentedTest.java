@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard;
+package at.uniquale.jokinghazard;
 
 import android.content.Context;
 

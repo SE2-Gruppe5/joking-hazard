@@ -6,7 +6,7 @@
     app:startDestination="@id/startmenuFragment">
     <fragment
         android:id="@+id/createGameFragment"
-        android:name="at.derfl007.jokinghazard.fragments.CreateGameFragment"
+        android:name="at.uniquale.jokinghazard.fragments.CreateGameFragment"
         android:label="fragment_create_game"
         tools:layout="@layout/fragment_create_game">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/joinGameFragment"
-        android:name="at.derfl007.jokinghazard.fragments.JoinGameFragment"
+        android:name="at.uniquale.jokinghazard.fragments.JoinGameFragment"
         android:label="fragment_join_game"
         tools:layout="@layout/fragment_join_game">
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/enterNameFragment"
-        android:name="at.derfl007.jokinghazard.fragments.EnterNameFragment"
+        android:name="at.uniquale.jokinghazard.fragments.EnterNameFragment"
         android:label="fragment_join_game_enter_name"
         tools:layout="@layout/fragment_enter_name">
         <action
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/startmenuFragment"
-        android:name="at.derfl007.jokinghazard.fragments.StartmenuFragment"
+        android:name="at.uniquale.jokinghazard.fragments.StartmenuFragment"
         android:label="fragment_startmenu"
         tools:layout="@layout/fragment_startmenu">
         <action
@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/waitingRoomFragment"
-        android:name="at.derfl007.jokinghazard.fragments.WaitingRoomFragment"
+        android:name="at.uniquale.jokinghazard.fragments.WaitingRoomFragment"
         android:label="fragment_waiting_room"
         tools:layout="@layout/fragment_waiting_room" >
         <action
@@ -63,16 +63,19 @@
     </fragment>
     <fragment
         android:id="@+id/gameBoardFragment"
-        android:name="at.derfl007.jokinghazard.fragments.GameBoardFragment"
+        android:name="at.uniquale.jokinghazard.fragments.GameBoardFragment"
         android:label="fragment_game_board"
         tools:layout="@layout/fragment_game_board" >
         <action
             android:id="@+id/action_gameBoardFragment_to_votingUIFragment"
             app:destination="@id/votingUIFragment" />
+        <action
+            android:id="@+id/action_gameBoardFragment_to_startmenuFragment"
+            app:destination="@id/startmenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/votingUIFragment"
-        android:name="at.derfl007.jokinghazard.fragments.VotingUIFragment"
+        android:name="at.uniquale.jokinghazard.fragments.VotingUIFragment"
         android:label="fragment_voting_ui"
         tools:layout="@layout/fragment_voting_ui" />
 </navigation>

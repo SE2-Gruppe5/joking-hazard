@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.fragments;
+package at.uniquale.jokinghazard.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +18,9 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
-import at.derfl007.jokinghazard.R;
-import at.derfl007.jokinghazard.activities.MainActivity;
-import at.derfl007.jokinghazard.util.ErrorMessages;
+import at.uniquale.jokinghazard.R;
+import at.uniquale.jokinghazard.activities.MainActivity;
+import at.uniquale.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
@@ -72,19 +70,15 @@ public class CreateGameFragment extends Fragment {
                         bundle.putString("roomCode", response1.getString("roomCode"));
                         Navigation.findNavController(v).navigate(R.id.action_createGameFragment_to_waitingRoomFragment, bundle);
 
-                    } else if (response1.getString("status").equals("err")){
+                    } else if (response1.getString("status").equals("err")) {
                         Snackbar.make(view, ErrorMessages.convertErrorMessages(response1.getString("msg")), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        // TODO : Handle Exception Sprint 3
                         Log.e("error", "error");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }));
-
         });
-
-
     }
 }

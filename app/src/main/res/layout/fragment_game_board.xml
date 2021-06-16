@@ -162,13 +162,24 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/pileDeck"
+                android:id="@+id/pileDeckBg"
                 android:layout_width="136dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:scaleType="centerCrop"
                 android:src="@drawable/stapel" />
+
+            <ImageButton
+                android:id="@+id/pileDeck"
+                android:layout_width="101dp"
+                android:layout_height="105dp"
+                android:layout_marginStart="-92dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back" />
 
             <ImageButton
                 android:id="@+id/pileDiscard"
@@ -377,7 +388,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
-            android:name="at.derfl007.jokinghazard.fragments.VotingUIFragment"
+            android:name="at.uniquale.jokinghazard.fragments.VotingUIFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
@@ -391,6 +402,31 @@
         android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical"
         android:visibility="invisible">
+
+        <LinearLayout
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-50px"
+            android:alpha="0.8"
+            android:background="#000000"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/waiting_for_players" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progressBar"
