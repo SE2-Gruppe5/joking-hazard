@@ -126,6 +126,13 @@ public class GameBoardFragment extends Fragment {
 
         timerText = view.findViewById(R.id.timerTextView);
 
+        final TextView player1PointsView = view.findViewById(R.id.playerPoints);
+        final TextView player2PointsView = view.findViewById(R.id.avatarPoints1);
+        final TextView player3pointsView = view.findViewById(R.id.avatarPoints2);
+        final TextView player4PointsView = view.findViewById(R.id.avatarPoints3);
+
+        final TextView[] playerPointsViews = {player1PointsView, player2PointsView, player3pointsView, player4PointsView};
+
         final TextView player1TextView = view.findViewById(R.id.playerName);
         final TextView player2TextView = view.findViewById(R.id.avatarName1);
         final TextView player3TextView = view.findViewById(R.id.avatarName2);
@@ -271,6 +278,26 @@ public class GameBoardFragment extends Fragment {
                 ImageButton winner = view.findViewById(PILES.PANEL_3.imageButtonIds[0]);
                 winner.setImageResource(getCardImageById(view, cardId));
                 Snackbar.make(view, playerName+" won this round!", Snackbar.LENGTH_SHORT).show();
+
+                socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
+                    JSONObject jsonResponse = (JSONObject) response[0];
+                    try {
+                        JSONArray players = jsonResponse.getJSONArray("users");
+                        for (int i = 0; i < playerTextViews.length; i++) {
+                            for (int j = 0; j < players.length(); j++) {
+                                if(players.getJSONObject(j).getString("name").equals(playerTextViews[i].getText().toString())) {
+                                    if (players.getJSONObject(j).has("points")) {
+                                        playerPointsViews[i].setText(players.getJSONObject(j).getString("points"));
+                                    } else {
+                                        playerPointsViews[i].setText("0");
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException | ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                }));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -278,15 +305,14 @@ public class GameBoardFragment extends Fragment {
         }));
 
         socket.on("room:gameOver", args -> requireActivity().runOnUiThread(()-> {
-            System.out.println("Scheißdreck verdammter: " + Arrays.toString(args));
-            Snackbar.make(view, "FUck OFF Game Over won this round!", Snackbar.LENGTH_SHORT).show();
-            /*
+            //System.out.println("Scheißdreck verdammter: " + Arrays.toString(args));
             try {
-
-
+                String playerName = ((JSONObject) args[0]).getString("name");
+                Snackbar.make(view, playerName + " hat das Spiel Gewonnen!", Snackbar.LENGTH_SHORT).show();
             } catch (JSONException e) {
+                Snackbar.make(view, "Jemand hat das Spiel Gewonnen!", Snackbar.LENGTH_SHORT).show();
                 e.printStackTrace();
-            }*/
+            }
         }));
     }
 
