@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.drag_and_drop;
+package at.uniquale.jokinghazard.drag_and_drop;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

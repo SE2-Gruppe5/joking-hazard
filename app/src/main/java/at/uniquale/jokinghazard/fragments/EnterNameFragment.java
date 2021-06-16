@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.fragments;
+package at.uniquale.jokinghazard.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +16,8 @@ import androidx.navigation.Navigation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
-import at.derfl007.jokinghazard.R;
-import at.derfl007.jokinghazard.activities.MainActivity;
+import at.uniquale.jokinghazard.R;
+import at.uniquale.jokinghazard.activities.MainActivity;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 

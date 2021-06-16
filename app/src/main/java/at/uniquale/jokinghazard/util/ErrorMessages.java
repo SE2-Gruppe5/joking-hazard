@@ -1,4 +1,4 @@
-package at.derfl007.jokinghazard.util;
+package at.uniquale.jokinghazard.util;
 
 public class ErrorMessages {
 
@@ -6,7 +6,7 @@ public class ErrorMessages {
 
         String converted = "An Error occured";
 
-        switch(errorCode) {
+        switch (errorCode) {
 
             case "already_in_room":
                 converted = "You are already in a room";
