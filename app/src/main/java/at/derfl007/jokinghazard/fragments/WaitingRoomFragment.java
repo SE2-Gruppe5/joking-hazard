@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
+import at.derfl007.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -73,7 +76,7 @@ public class WaitingRoomFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                socket.emit("room:leave");
+                socket.emit("room:leave", (Ack) response -> {});
                 Navigation.findNavController(view).navigateUp();
             }
         };
@@ -102,31 +105,9 @@ public class WaitingRoomFragment extends Fragment {
             playerImageView.setImageAlpha(125);
         }
 
-        socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
-            JSONObject jsonResponse = (JSONObject) response[0];
-            try {
-                JSONArray players = jsonResponse.getJSONArray("users");
-
-                for (int i = 0; i < players.length(); i++) {
-                    playerTextViews[i].setText(players.getJSONObject(i).getString("name"));
-                    playerTextViews[i].setVisibility(View.VISIBLE);
-                    playerImageViews[i].setImageAlpha(255);
-                }
-            } catch (JSONException | ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-        }));
-
         AtomicBoolean isAdmin = new AtomicBoolean(false);
 
-        socket.emit("user:data:get", socket.id(), (Ack) response -> requireActivity().runOnUiThread(() -> {
-            JSONObject jsonResponse = (JSONObject) response[0];
-            try {
-                isAdmin.set(jsonResponse.getJSONObject("userData").getBoolean("admin"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }));
+        socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> getPlayers(view, response, playerTextViews, playerImageViews, isAdmin)));
 
         socket.on("room:player_joined", response -> requireActivity().runOnUiThread(() -> socket.emit("room:players", (Ack) response2 -> requireActivity().runOnUiThread(() -> {
             JSONObject jsonResponse2 = (JSONObject) response2[0];
@@ -151,6 +132,53 @@ public class WaitingRoomFragment extends Fragment {
         socket.on("room:admin_started_game", response -> requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_waitingRoomFragment_to_gameBoardFragment)));
 
         startGame.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_waitingRoomFragment_to_gameBoardFragment));
+
+        // Benachrichtigung an Spieler wenn jemand Raum verlässt
+        socket.on("msg:info", response -> requireActivity().runOnUiThread(() -> {
+
+            socket.emit("room:players", (Ack) response1 -> requireActivity().runOnUiThread(() -> getPlayers(view, response1, playerTextViews, playerImageViews, isAdmin)));
+
+            JSONObject jsonResponse = (JSONObject) response[0];
+            Log.d("Debug", jsonResponse.toString());
+            try {
+                Snackbar.make(view, jsonResponse.getString("userName") + " " + ErrorMessages.convertErrorMessages(jsonResponse.getString("msg")), Snackbar.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }));
+    }
+
+    private void getPlayers(View view, Object[] response, TextView[] playerTextViews, ImageView[] playerImageViews, AtomicBoolean isAdmin) {
+        JSONObject jsonResponse = (JSONObject) response[0];
+
+        socket.emit("user:data:get", socket.id(), (Ack) response1 -> requireActivity().runOnUiThread(() -> {
+            JSONObject jsonResponse1 = (JSONObject) response1[0];
+            try {
+                isAdmin.set(jsonResponse1.getJSONObject("userData").getBoolean("admin"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }));
+
+        try {
+            JSONArray players = jsonResponse.getJSONArray("users");
+            Log.d("Debug", jsonResponse.toString());
+
+            for (int i = 0; i < playerTextViews.length; i++) {
+                playerTextViews[i].setText(" ");
+                playerTextViews[i].setVisibility(View.INVISIBLE);
+                playerImageViews[i].setImageAlpha(125);
+            }
+
+            for (int i = 0; i < players.length(); i++) {
+                playerTextViews[i].setText(players.getJSONObject(i).getString("name"));
+                playerTextViews[i].setVisibility(View.VISIBLE);
+                playerImageViews[i].setImageAlpha(255);
+            }
+        } catch (JSONException | ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

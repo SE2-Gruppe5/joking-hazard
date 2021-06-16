@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,7 @@ import java.util.Objects;
 
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
+import at.derfl007.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
@@ -74,6 +77,9 @@ public class JoinGameFragment extends Fragment {
                         bundle.putString("roomCode", response1.getString("roomCode"));
                         Navigation.findNavController(v).navigate(R.id.action_joinGameFragment_to_waitingRoomFragment, bundle);
 
+
+                    } else if (response1.getString("status").equals("err")) { // wenn vom Server "err" kommt --> falscher Roomcode
+                        Snackbar.make(view, ErrorMessages.convertErrorMessages(response1.getString("msg")), Snackbar.LENGTH_SHORT).show();
                     } else {
                         Log.e("error", "error");
                     }
@@ -84,4 +90,5 @@ public class JoinGameFragment extends Fragment {
 
         });
     }
+
 }
