@@ -276,6 +276,18 @@ public class GameBoardFragment extends Fragment {
             }
 
         }));
+
+        socket.on("room:gameOver", args -> requireActivity().runOnUiThread(()-> {
+            System.out.println("Scheißdreck verdammter: " + Arrays.toString(args));
+            Snackbar.make(view, "FUck OFF Game Over won this round!", Snackbar.LENGTH_SHORT).show();
+            /*
+            try {
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }*/
+        }));
     }
 
     private void cardMoved(View view, Object[] response) {

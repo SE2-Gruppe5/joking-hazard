@@ -53,12 +53,14 @@ public class CreateGameFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         EditText time = view.findViewById(R.id.timeLimitEditText);
+        EditText point = view.findViewById(R.id.pointLimitEditText);
 
 
         final Button createGame = view.findViewById(R.id.saveOptionsButton);
         createGame.setOnClickListener(v -> {
             long timeLimit = Long.parseLong(time.getText().toString());
-            socket.emit("room:create", timeLimit,(Ack) args1 -> requireActivity().runOnUiThread(() -> {
+            long pointLimit = Long.parseLong(point.getText().toString());
+            socket.emit("room:create", timeLimit, pointLimit, (Ack) args1 -> requireActivity().runOnUiThread(() -> {
                 JSONObject response1 = (JSONObject) args1[0];
 
                 try {
