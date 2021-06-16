@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import at.derfl007.jokinghazard.R;
 import at.derfl007.jokinghazard.activities.MainActivity;
 import at.derfl007.jokinghazard.drag_and_drop.MyTouchListener;
+import at.derfl007.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
@@ -300,6 +301,14 @@ public class GameBoardFragment extends Fragment {
         socket.emit("card:move", sourcePile, targetPile, sourceIndex, targetIndex, (Ack) response -> requireActivity().runOnUiThread(() -> {
             JSONObject jsonResponse = (JSONObject) response[0];
             Log.d("RESPONSE", jsonResponse.toString());
+
+            try {
+                if (jsonResponse.getString("status").equals("err")) {
+                    Snackbar.make(requireView(), ErrorMessages.convertErrorMessages(jsonResponse.getString("msg")), Snackbar.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }));
     }
 

@@ -9,7 +9,7 @@ public class ErrorMessages {
         switch(errorCode) {
 
             case "already_in_room":
-                converted = "You are already in a romm";
+                converted = "You are already in a room";
                 break;
 
             case "no_free_room":
@@ -57,6 +57,10 @@ public class ErrorMessages {
 
             case "invalid_pile_index":
                 converted = "Invalid Pile index";
+                break;
+
+            case "invalid_time_limit":
+                converted = "Choose a timelimit between 0 and 60 seconds";
                 break;
         }
 
