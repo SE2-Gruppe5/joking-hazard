@@ -41,7 +41,7 @@ public class ErrorMessages {
                 break;
 
             case "user_not_in_a_room":
-                converted = "This USer is not in a room";
+                converted = "This user is not in a room";
                 break;
 
             case "user_doesnt_exist":
