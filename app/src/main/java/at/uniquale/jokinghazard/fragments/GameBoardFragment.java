@@ -1,6 +1,11 @@
 package at.uniquale.jokinghazard.fragments;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -27,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import at.uniquale.jokinghazard.R;
@@ -36,7 +42,7 @@ import at.uniquale.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
-public class GameBoardFragment extends Fragment {
+public class GameBoardFragment extends Fragment implements SensorEventListener{
 
     private static final int HAS_CARD = 0;
     private static final int pointsPerWinningCard = 1;
@@ -51,6 +57,14 @@ public class GameBoardFragment extends Fragment {
     private boolean timerRunning;
     private String[] playerIds;
     private Fragment childFragment;
+    private SensorManager shakingSensorManager;
+    private Sensor accelSensor;
+    private boolean accelerometerSensorAvailable;
+    private float currentX, currentY, currentZ;
+    private float lastX, lastY, lastZ;
+    private float xDifference, yDifference, zDifference;
+    private boolean itIsNotFirstTime = false;
+    private float shakingThreshold = 5f;
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
@@ -105,9 +119,65 @@ public class GameBoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shakingSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        if (shakingSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            accelSensor = shakingSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            accelerometerSensorAvailable = true;
+        }else {
+            Log.d("Sensorik", "Accelerometer Sensor not avilable");
+            accelerometerSensorAvailable = false;
+        }
         if (getArguments() != null) {
             roomCode = getArguments().getString(ARG_ROOM_CODE);
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        currentX = event.values[0];
+        currentY = event.values[1];
+        currentZ = event.values[2];
+        Log.d("Sensor", "Test recognize?");
+        if(itIsNotFirstTime){
+            xDifference = Math.abs(lastX - currentX);
+            yDifference = Math.abs(lastY - currentY);
+            zDifference = Math.abs(lastZ - currentZ);
+
+            if(     (xDifference > shakingThreshold && yDifference > shakingThreshold)||
+                    (xDifference > shakingThreshold && zDifference > shakingThreshold)||
+                    (yDifference > shakingThreshold && zDifference > shakingThreshold)){
+                //todo imgButtons unbelegte Buttons sind minus 1??
+                if(this.playerPile.imageButtonIds[7] == -1)
+                    moveCard(PILES.DECK.id, this.playerPile.id, 0, 7);
+            }
+
+        }
+
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        itIsNotFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(accelerometerSensorAvailable)
+            shakingSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(accelerometerSensorAvailable)
+            shakingSensorManager.unregisterListener(this);
     }
 
     @Override
