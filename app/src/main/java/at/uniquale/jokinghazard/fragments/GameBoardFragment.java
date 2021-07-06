@@ -1,6 +1,11 @@
 package at.uniquale.jokinghazard.fragments;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -27,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import at.uniquale.jokinghazard.R;
@@ -36,7 +42,7 @@ import at.uniquale.jokinghazard.util.ErrorMessages;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
 
-public class GameBoardFragment extends Fragment {
+public class GameBoardFragment extends Fragment implements SensorEventListener {
 
     private static final int HAS_CARD = 0;
     private static final int pointsPerWinningCard = 1;
@@ -51,6 +57,16 @@ public class GameBoardFragment extends Fragment {
     private boolean timerRunning;
     private String[] playerIds;
     private Fragment childFragment;
+    private SensorManager shakingSensorManager;
+    private Sensor accelSensor;
+    private boolean accelerometerSensorAvailable;
+    private float currentX, currentY, currentZ;
+    private float lastX, lastY, lastZ;
+    private float xDifference, yDifference, zDifference;
+    private boolean itIsNotFirstTime = false;
+    private float shakingThreshold = 3f;
+
+    boolean currentPlayer;
 
     enum PILES {
         DECK(0, new int[]{R.id.pileDeck}),
@@ -105,9 +121,79 @@ public class GameBoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shakingSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        if (shakingSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelSensor = shakingSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            accelerometerSensorAvailable = true;
+        } else {
+            Log.d("Sensorik", "Accelerometer Sensor not avilable");
+            accelerometerSensorAvailable = false;
+        }
         if (getArguments() != null) {
             roomCode = getArguments().getString(ARG_ROOM_CODE);
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        currentX = event.values[0];
+        currentY = event.values[1];
+        currentZ = event.values[2];
+
+        if (currentPlayer) {
+
+            if (itIsNotFirstTime) {
+                xDifference = Math.abs(lastX - currentX);
+                yDifference = Math.abs(lastY - currentY);
+                zDifference = Math.abs(lastZ - currentZ);
+
+                if ((xDifference > shakingThreshold && yDifference > shakingThreshold) ||
+                        (xDifference > shakingThreshold && zDifference > shakingThreshold) ||
+                        (yDifference > shakingThreshold && zDifference > shakingThreshold)) {
+
+                    Log.d("Sensor", "Test recognize?");
+
+
+                    if (requireView().findViewById(this.playerPile.imageButtonIds[7]).getTag(R.id.TAG_IMAGE_RESOURCE) != "-1") {
+                        moveCard(PILES.DECK.id, this.playerPile.id, 0, 7);
+
+                        // Chetaen nur wenn noch keine 8te karte
+                        socket.emit("room:playerCheated", socket.id(), (Ack) response -> {
+
+                        });
+                    }
+
+                }
+
+            }
+        }
+
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        itIsNotFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (accelerometerSensorAvailable)
+            shakingSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (accelerometerSensorAvailable)
+            shakingSensorManager.unregisterListener(this);
     }
 
     @Override
@@ -126,6 +212,11 @@ public class GameBoardFragment extends Fragment {
 
         timerText = view.findViewById(R.id.timerTextView);
 
+        final Button report1 = view.findViewById(R.id.report1);
+        final Button report2 = view.findViewById(R.id.report2);
+        final Button report3 = view.findViewById(R.id.report3);
+
+
         final TextView player1PointsView = view.findViewById(R.id.playerPoints);
         final TextView player2PointsView = view.findViewById(R.id.avatarPoints1);
         final TextView player3pointsView = view.findViewById(R.id.avatarPoints2);
@@ -140,9 +231,36 @@ public class GameBoardFragment extends Fragment {
 
         final TextView[] playerTextViews = {player1TextView, player2TextView, player3TextView, player4TextView};
 
+        final ImageView player2ImageView = view.findViewById(R.id.avatar1);
+        final ImageView player3ImageView = view.findViewById(R.id.avatar2);
+        final ImageView player4ImageView = view.findViewById(R.id.avatar3);
+
+        final ImageView[] playerImageViews = {player2ImageView, player3ImageView, player4ImageView};
+        final int[] avatars = {R.drawable.avatar_1, R.drawable.avatar_2, R.drawable.avatar_3, R.drawable.avatar_4};
+
+
+
         playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
+
+        report1.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught", playerTextViews[1].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
+
+        report2.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught" , playerTextViews[2].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
+
+        report3.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught" , playerTextViews[3].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
 
         socket.emit("user:data:get", socket.id(), (Ack) response -> {
             JSONObject jsonResponse = (JSONObject) response[0];
@@ -158,7 +276,7 @@ public class GameBoardFragment extends Fragment {
             ImageButton player1ImageButtonId1 = view.findViewById(PILES.PLAYER_1.imageButtonIds[i1]);
             player1ImageButtonId1.setEnabled(false);
             player1ImageButtonId1.setOnClickListener(null);
-            //          player1ImageButtonId1.setTag(1, "Player"+(i1+1));
+            // player1ImageButtonId1.setTag(1, "Player"+(i1+1));
         }
 
         String localPlayerName = EnterNameFragment.localPlayerName;
@@ -181,7 +299,10 @@ public class GameBoardFragment extends Fragment {
                     }
 
                     if (!players.getJSONObject(i).getString("name").equals(localPlayerName)) {
-                        playerTextViews[playerIndex++].setText(players.getJSONObject(i).getString("name"));
+                        playerImageViews[playerIndex - 1].setImageResource(avatars[i]);
+                        playerTextViews[playerIndex].setText(players.getJSONObject(i).getString("name"));
+                        // ID als Tag auf TextView
+                        playerTextViews[playerIndex++].setTag(R.id.TAG_USER_ID, players.getJSONObject(i).getString("id"));
                     }
                 }
 
@@ -203,6 +324,65 @@ public class GameBoardFragment extends Fragment {
 
             } catch (JSONException | ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
+            }
+        }));
+
+        socket.on("room:somePlayerCaught" , (response) -> requireActivity().runOnUiThread(() -> {
+            Snackbar.make(view,  "Someone got caught", Snackbar.LENGTH_SHORT).show();
+        }));
+
+        socket.on("room:playerGuessedWrong" , (response) -> requireActivity().runOnUiThread(() -> {
+            Snackbar.make(view,  "No Cheater, Wrong Call!", Snackbar.LENGTH_SHORT).show();
+        }));
+
+        socket.on("room:somePlayerCheated", (response) -> requireActivity().runOnUiThread(() -> {
+            JSONObject jsonResponse = (JSONObject) response[0];
+            int playerIndex = 0;
+            for (int i = 0; i < playerTextViews.length; i++) {
+                try {
+                    if (playerTextViews[i].getTag(R.id.TAG_USER_ID) != null) {
+                        if (playerTextViews[i].getTag(R.id.TAG_USER_ID).equals(jsonResponse.getString("user"))) {
+                            playerIndex = i;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            ImageView avatarCards = null;
+
+            switch (playerIndex) {
+                case 0:
+                    ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards3)).setImageResource(R.drawable.karten3);
+                    break;
+                case 1:
+                    ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.cards_8_);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards3)).setImageResource(R.drawable.karten3);
+                    break;
+
+                case 2:
+                    ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.cards_8_);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards3)).setImageResource(R.drawable.karten3);
+                    break;
+
+                case 3:
+                    ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards3)).setImageResource(R.drawable.cards_8_);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (avatarCards != null) {
+                // Bild ändern
+
             }
         }));
 
@@ -359,6 +539,8 @@ public class GameBoardFragment extends Fragment {
 
     private void gameTurn(View view, Object[] response) {
 
+        currentPlayer = true;
+
         for (int i = 0; i < this.playerPile.imageButtonIds.length - 1; i++) {
             ImageButton imageButton = view.findViewById(this.playerPile.imageButtonIds[i]);
             Log.d("DEBUG", "imageButton.getTag() => " + imageButton.getTag(R.id.TAG_IMAGE_RESOURCE));
@@ -450,6 +632,7 @@ public class GameBoardFragment extends Fragment {
 
                     final ImageView image = parentView.findViewById(R.id.pilePanel2);
                     image.setOnDragListener((v1, event1) -> dragListeners(PILES.PANEL_2, parentView, v1, event1));
+                    currentPlayer = false;
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     Log.d("Drag", "Drag ended");
@@ -487,6 +670,7 @@ public class GameBoardFragment extends Fragment {
                     socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
                     countDownTimer.cancel();
                     timerText.setVisibility(View.INVISIBLE);
+                    currentPlayer = false;
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     Log.d("Drag", "Drag ended");

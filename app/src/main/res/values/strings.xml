@@ -33,4 +33,5 @@
     <string name="won_the_game">%s won the game!</string>
     <string name="won_the_round">%s won this round!</string>
     <string name="leave_game">Leave Game</string>
+    <string name="report">Report</string>
 </resources>
