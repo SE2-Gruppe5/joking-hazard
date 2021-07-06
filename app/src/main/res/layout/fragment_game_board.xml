@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
-                    android:text="Button" />
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName1"
@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
-                    android:text="Button" />
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName2"
@@ -148,7 +148,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
-                    android:text="Button" />
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName3"

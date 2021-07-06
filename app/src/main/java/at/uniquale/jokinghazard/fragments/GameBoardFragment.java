@@ -155,14 +155,16 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
 
                     Log.d("Sensor", "Test recognize?");
 
-                    // todo imgButtons unbelegte Buttons sind minus 1??
 
-                    if (this.playerPile.imageButtonIds[7] == -1)
+                    if (requireView().findViewById(this.playerPile.imageButtonIds[7]).getTag(R.id.TAG_IMAGE_RESOURCE) != "-1") {
                         moveCard(PILES.DECK.id, this.playerPile.id, 0, 7);
 
-                    socket.emit("room:playerCheated", socket.id(), (Ack) response -> {
+                        // Chetaen nur wenn noch keine 8te karte
+                        socket.emit("room:playerCheated", socket.id(), (Ack) response -> {
 
-                    });
+                        });
+                    }
+
                 }
 
             }
@@ -214,23 +216,6 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
         final Button report2 = view.findViewById(R.id.report2);
         final Button report3 = view.findViewById(R.id.report3);
 
-        report1.setOnClickListener((view1) -> {
-            socket.emit("room:playerCaught" , (Ack) response -> {
-
-            });
-        });
-
-        report2.setOnClickListener((view1) -> {
-            socket.emit("room:playerCaught" , (Ack) response -> {
-
-            });
-        });
-
-        report3.setOnClickListener((view1) -> {
-            socket.emit("room:playerCaught" , (Ack) response -> {
-
-            });
-        });
 
         final TextView player1PointsView = view.findViewById(R.id.playerPoints);
         final TextView player2PointsView = view.findViewById(R.id.avatarPoints1);
@@ -246,9 +231,36 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
 
         final TextView[] playerTextViews = {player1TextView, player2TextView, player3TextView, player4TextView};
 
+        final ImageView player2ImageView = view.findViewById(R.id.avatar1);
+        final ImageView player3ImageView = view.findViewById(R.id.avatar2);
+        final ImageView player4ImageView = view.findViewById(R.id.avatar3);
+
+        final ImageView[] playerImageViews = {player2ImageView, player3ImageView, player4ImageView};
+        final int[] avatars = {R.drawable.avatar_1, R.drawable.avatar_2, R.drawable.avatar_3, R.drawable.avatar_4};
+
+
+
         playerIds = new String[4];
 
         AtomicBoolean isAdmin = new AtomicBoolean(false);
+
+        report1.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught", playerTextViews[1].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
+
+        report2.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught" , playerTextViews[2].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
+
+        report3.setOnClickListener((view1) -> {
+            socket.emit("room:playerCaught" , playerTextViews[3].getTag(R.id.TAG_USER_ID), (Ack) response -> {
+
+            });
+        });
 
         socket.emit("user:data:get", socket.id(), (Ack) response -> {
             JSONObject jsonResponse = (JSONObject) response[0];
@@ -287,7 +299,10 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
                     }
 
                     if (!players.getJSONObject(i).getString("name").equals(localPlayerName)) {
-                        playerTextViews[playerIndex++].setText(players.getJSONObject(i).getString("name"));
+                        playerImageViews[playerIndex - 1].setImageResource(avatars[i]);
+                        playerTextViews[playerIndex].setText(players.getJSONObject(i).getString("name"));
+                        // ID als Tag auf TextView
+                        playerTextViews[playerIndex++].setTag(R.id.TAG_USER_ID, players.getJSONObject(i).getString("id"));
                     }
                 }
 
@@ -322,11 +337,11 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
 
         socket.on("room:somePlayerCheated", (response) -> requireActivity().runOnUiThread(() -> {
             JSONObject jsonResponse = (JSONObject) response[0];
-            int playerIndex = 1;
-            for (int i = 0; i < playerIds.length; i++) {
+            int playerIndex = 0;
+            for (int i = 0; i < playerTextViews.length; i++) {
                 try {
-                    if (playerIds[i] != null) {
-                        if (playerIds[i].equals(jsonResponse.getString("user"))) {
+                    if (playerTextViews[i].getTag(R.id.TAG_USER_ID) != null) {
+                        if (playerTextViews[i].getTag(R.id.TAG_USER_ID).equals(jsonResponse.getString("user"))) {
                             playerIndex = i;
                         }
                     }
@@ -338,6 +353,11 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
             ImageView avatarCards = null;
 
             switch (playerIndex) {
+                case 0:
+                    ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.karten3);
+                    ((ImageView) requireView().findViewById(R.id.avatarCards3)).setImageResource(R.drawable.karten3);
+                    break;
                 case 1:
                     ((ImageView) requireView().findViewById(R.id.avatarCards1)).setImageResource(R.drawable.cards_8_);
                     ((ImageView) requireView().findViewById(R.id.avatarCards2)).setImageResource(R.drawable.karten3);
@@ -612,6 +632,7 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
 
                     final ImageView image = parentView.findViewById(R.id.pilePanel2);
                     image.setOnDragListener((v1, event1) -> dragListeners(PILES.PANEL_2, parentView, v1, event1));
+                    currentPlayer = false;
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     Log.d("Drag", "Drag ended");
@@ -649,6 +670,7 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
                     socket.emit("room:playerDone", (Ack) response2 -> requireActivity().runOnUiThread(() -> Log.d("RESPONSE", ((JSONObject) response2[0]).toString())));
                     countDownTimer.cancel();
                     timerText.setVisibility(View.INVISIBLE);
+                    currentPlayer = false;
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                     Log.d("Drag", "Drag ended");
