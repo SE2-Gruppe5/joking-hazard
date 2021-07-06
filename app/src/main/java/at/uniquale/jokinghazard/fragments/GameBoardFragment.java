@@ -406,7 +406,7 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
 
             ImageView panelDeck = view.findViewById(R.id.ComicStoryImg_Deck);
             ImageView panelJudge = view.findViewById(R.id.ComicStoryImg_Judge);
-            ImageView panleWinner = view.findViewById(R.id.ComicStoryImg_Winner);
+            ImageView panelWinner = view.findViewById(R.id.ComicStoryImg_Winner);
 
             panelDeck.setImageResource(getCardImageById(view, (String) view.findViewById(PILES.PANEL_1.imageButtonIds[0]).getTag(R.id.TAG_IMAGE_RESOURCE)));
             panelJudge.setImageResource(getCardImageById(view, (String) view.findViewById(PILES.PANEL_2.imageButtonIds[0]).getTag(R.id.TAG_IMAGE_RESOURCE)));
@@ -425,40 +425,38 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
                 imageButtons[i].setTag(R.id.TAG_IMAGE_RESOURCE, imageIds[i]);
                 imageButtons[i].setVisibility(View.VISIBLE);
                 imageButtons[i].setOnClickListener(v -> {
-                    panleWinner.setImageResource(getCardImageById(view, (String) v.getTag(R.id.TAG_IMAGE_RESOURCE)));
-                    panleWinner.setTag(R.id.TAG_USER, v.getTag(R.id.TAG_USER));
-                    panleWinner.setTag(R.id.TAG_IMAGE_RESOURCE, v.getTag(R.id.TAG_IMAGE_RESOURCE));
-                    Log.d("GameBoard", (String) panleWinner.getTag(R.id.TAG_USER));
+                    panelWinner.setImageResource(getCardImageById(view, (String) v.getTag(R.id.TAG_IMAGE_RESOURCE)));
+                    panelWinner.setTag(R.id.TAG_USER, v.getTag(R.id.TAG_USER));
+                    panelWinner.setTag(R.id.TAG_IMAGE_RESOURCE, v.getTag(R.id.TAG_IMAGE_RESOURCE));
+                    Log.d("GameBoard", (String) panelWinner.getTag(R.id.TAG_USER));
 
                     confirm.setEnabled(true);
                 });
 
                 confirm.setOnClickListener(v -> {
-                    if (panleWinner.getTag(R.id.TAG_USER) != null) {
-                        Log.d("Probe2", (String) panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE));
-                        socket.emit("room:storyConfirmed", panleWinner.getTag(R.id.TAG_USER), panleWinner.getTag(R.id.TAG_IMAGE_RESOURCE), (Ack) args1 -> {
-                        });
-                        socket.emit("user:points:add", panleWinner.getTag(R.id.TAG_USER), pointsPerWinningCard, (Ack) args1 -> {
+                    if (panelWinner.getTag(R.id.TAG_USER) != null) {
+                        Log.d("Probe2", (String) panelWinner.getTag(R.id.TAG_IMAGE_RESOURCE));
+                        socket.emit("room:storyConfirmed", panelWinner.getTag(R.id.TAG_USER), panelWinner.getTag(R.id.TAG_IMAGE_RESOURCE), (Ack) args1 -> {
                         });
 
+                        socket.emit("user:points:add", panelWinner.getTag(R.id.TAG_USER), pointsPerWinningCard, (Ack) args1 -> {
+                        });
+
+                        panelWinner.setImageResource(R.drawable.transparent);
                         votingUi.setVisibility(View.GONE);
                     }
                 });
             }
-
-
             votingUi.setVisibility(View.VISIBLE);
         }));
 
         socket.on("room:winner", args -> requireActivity().runOnUiThread(() -> {
             try {
                 String playerName = ((JSONObject) args[0]).getString("player");
-                Log.d("Probe", playerName);
                 String cardId = ((JSONObject) args[0]).getString("cardId");
-                Log.d("Probe", cardId);
                 ImageButton winner = view.findViewById(PILES.PANEL_3.imageButtonIds[0]);
                 winner.setImageResource(getCardImageById(view, cardId));
-                Snackbar.make(view, playerName + " won this round!", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, getString(R.string.won_the_round, playerName), Snackbar.LENGTH_SHORT).show();
 
                 socket.emit("room:players", (Ack) response -> requireActivity().runOnUiThread(() -> {
                     JSONObject jsonResponse = (JSONObject) response[0];
@@ -468,9 +466,9 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
                             for (int j = 0; j < players.length(); j++) {
                                 if (players.getJSONObject(j).getString("name").equals(playerTextViews[i].getText().toString())) {
                                     if (players.getJSONObject(j).has("points")) {
-                                        playerPointsViews[i].setText(players.getJSONObject(j).getString("points"));
+                                        playerPointsViews[i].setText(getResources().getQuantityString(R.plurals.points, players.getJSONObject(j).getInt("points"), players.getJSONObject(j).getInt("points")));
                                     } else {
-                                        playerPointsViews[i].setText("0");
+                                        playerPointsViews[i].setText(getResources().getQuantityString(R.plurals.points, 0, 0));
                                     }
                                 }
                             }
@@ -486,19 +484,21 @@ public class GameBoardFragment extends Fragment implements SensorEventListener {
         }));
 
         socket.on("room:gameOver", args -> requireActivity().runOnUiThread(() -> {
+            String playerName;
             try {
-                String playerName = ((JSONObject) args[0]).getString("name");
-                Snackbar.make(view, playerName + " hat das Spiel Gewonnen!", Snackbar.LENGTH_SHORT).show();
+                playerName = ((JSONObject) args[0]).getString("name");
             } catch (JSONException e) {
-                Snackbar.make(view, "Jemand hat das Spiel Gewonnen!", Snackbar.LENGTH_SHORT).show();
+                playerName = "Someone";
                 e.printStackTrace();
             }
-            try {
-                Thread.sleep(2000);
-                socket.emit("room:leave", (Ack) args1 -> requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_gameBoardFragment_to_startmenuFragment)));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            String finalPlayerName = playerName;
+            socket.emit("room:leave", (Ack) args1 -> requireActivity().runOnUiThread(() -> {
+                view.findViewById(R.id.winnerOverlay).setVisibility(View.VISIBLE);
+                TextView winnerText = view.findViewById(R.id.winnerText);
+                winnerText.setText(getString(R.string.won_the_game, finalPlayerName));
+                Button winnerButton = view.findViewById(R.id.winnerButton);
+                winnerButton.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_gameBoardFragment_to_startmenuFragment));
+            }));
         }));
     }
 

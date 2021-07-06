@@ -25,5 +25,13 @@
     <string name="point_limit">Point Limit</string>
     <string name="time_limit_per_turn">Time Limit per Turn</string>
     <string name="waiting_for_players">Waiting for players</string>
+    <string name="points_placeholder">0 Points</string>
+    <plurals name="points">
+        <item quantity="one">%d Point</item>
+        <item quantity="other">%d Points</item>
+    </plurals>
+    <string name="won_the_game">%s won the game!</string>
+    <string name="won_the_round">%s won this round!</string>
+    <string name="leave_game">Leave Game</string>
     <string name="report">Report</string>
 </resources>
