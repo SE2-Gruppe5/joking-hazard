@@ -4,4 +4,5 @@
     <item name="TAG_IMAGE_RESOURCE" type="id" />
     <item name="TAG_USER" type="id"/>
     <item name="TAG_CARDS_AMOUNT" type="id"/>
+    <item name="TAG_USER_ID" type="id"/>
 </resources>

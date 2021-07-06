@@ -34,9 +34,16 @@
                 <ImageView
                     android:id="@+id/avatarCards1"
                     android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="65dp"
                     android:layout_weight="30"
                     android:src="@drawable/karten3" />
+
+                <Button
+                    android:id="@+id/report1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName1"
@@ -79,9 +86,16 @@
                 <ImageView
                     android:id="@+id/avatarCards2"
                     android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="65dp"
                     android:layout_weight="30"
                     android:src="@drawable/karten3" />
+
+                <Button
+                    android:id="@+id/report2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName2"
@@ -125,9 +139,16 @@
                 <ImageView
                     android:id="@+id/avatarCards3"
                     android:layout_width="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="65dp"
                     android:layout_weight="30"
                     android:src="@drawable/karten3" />
+
+                <Button
+                    android:id="@+id/report3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:text="@string/report" />
 
                 <TextView
                     android:id="@+id/avatarName3"
